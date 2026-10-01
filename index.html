@@ -1,0 +1,2581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>自愿加班协商书 · 电子签署系统</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --brand:#1e5f8f; --brand-d:#14456b; --brand-l:#e8f2fa;
+  --ink:#1b2733; --ink2:#5a6b7c; --line:#d8e0e8; --bg:#f4f7fa;
+  --ok:#1a8a55; --warn:#c8811a; --err:#c0392b;
+}
+body{font-family:"Segoe UI","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+  background:var(--bg);color:var(--ink);font-size:14px;line-height:1.6;-webkit-text-size-adjust:100%}
+button{font-family:inherit;font-size:14px;cursor:pointer;border:none;border-radius:6px;padding:8px 14px;
+  background:var(--brand);color:#fff;transition:.15s}
+button:hover{background:var(--brand-d)}
+button.sec{background:#fff;color:var(--brand);border:1px solid var(--brand)}
+button.sec:hover{background:var(--brand-l)}
+button.ghost{background:transparent;color:var(--ink2);border:1px solid var(--line)}
+button.ghost:hover{background:#eef2f6}
+button.danger{background:#fff;color:var(--err);border:1px solid var(--err)}
+button.danger:hover{background:#fdeceb}
+button:disabled{opacity:.45;cursor:not-allowed}
+input,select,textarea{font-family:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);
+  border-radius:6px;background:#fff;color:var(--ink);width:100%}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(30,95,143,.12)}
+label{font-size:12px;color:var(--ink2);font-weight:600;display:block;margin-bottom:4px}
+textarea{resize:vertical;line-height:1.6}
+
+.top{background:linear-gradient(100deg,#14456b,#1e5f8f);color:#fff;padding:14px 20px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.top h1{font-size:17px;font-weight:600;letter-spacing:.3px}
+.top .sub{font-size:11px;opacity:.8}
+.tabs{margin-left:auto;display:flex;gap:6px;background:rgba(255,255,255,.13);padding:4px;border-radius:8px}
+.tabs button{background:transparent;color:#dbe8f2;padding:7px 16px;border-radius:6px;font-size:13px}
+.tabs button.on{background:#fff;color:var(--brand-d);font-weight:600}
+
+.wrap{max-width:1180px;margin:0 auto;padding:20px}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:16px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card h2{font-size:15px;margin-bottom:4px;color:var(--brand-d)}
+.card .hint{font-size:12px;color:var(--ink2);margin-bottom:14px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+.steps{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.step{flex:1;min-width:120px;padding:9px 12px;border-radius:8px;background:#eef2f6;color:var(--ink2);
+  font-size:12px;font-weight:600;border:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.step.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.step .n{width:19px;height:19px;border-radius:50%;background:rgba(255,255,255,.28);display:grid;place-items:center;font-size:11px}
+.step.on .n{background:rgba(255,255,255,.3)}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{border:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:middle}
+th{background:#eef3f8;font-size:12px;color:var(--brand-d);font-weight:600;white-space:nowrap}
+tbody tr:nth-child(even){background:#fafcfd}
+.tbl-wrap{overflow:auto;border-radius:8px;border:1px solid var(--line)}
+td input{border:none;padding:3px 4px;background:transparent;font-size:13px}
+td input:focus{background:#fff;box-shadow:none;border:1px solid var(--brand)}
+.mini{font-size:11px;color:var(--ink2)}
+.mono{font-family:Consolas,Menlo,monospace;font-size:12px}
+
+.pill{display:inline-block;padding:2px 9px;border-radius:11px;font-size:11px;font-weight:600}
+.pill.ok{background:#e3f6ec;color:var(--ok)}
+.pill.no{background:#fdeceb;color:var(--err)}
+.pill.wait{background:#fdf3e3;color:var(--warn)}
+
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.bar .sp{flex:1}
+.empty{padding:34px;text-align:center;color:var(--ink2);font-size:13px;background:#fafbfc;
+  border:1px dashed var(--line);border-radius:8px}
+
+/* 二维码 */
+.qrbox{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap}
+.qrbox .code{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center}
+.qrbox canvas{image-rendering:pixelated;border-radius:4px}
+.qrbox .code .cap{font-size:11px;color:var(--ink2);margin-top:8px;max-width:230px;word-break:break-all}
+.qrinfo{flex:1;min-width:260px}
+.notice{background:#fff8e6;border:1px solid #f2dfae;color:#7a5a12;padding:10px 12px;border-radius:8px;font-size:12px;margin-top:10px}
+.notice.info{background:var(--brand-l);border-color:#bcd9ef;color:var(--brand-d)}
+
+/* 员工端 */
+.emp{max-width:560px;margin:0 auto;padding:16px}
+.emp .card{padding:18px}
+.login-big input{font-size:20px;padding:14px;text-align:center;letter-spacing:3px;font-family:Consolas,monospace}
+.docbox{background:#fafcfd;border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:14px;
+  max-height:340px;overflow:auto;font-size:12.5px;line-height:1.75}
+.docbox h3{font-size:13px;text-align:center;margin-bottom:8px;color:var(--brand-d)}
+.docbox .vi{color:#1b2733}
+.docbox .cn{color:#4a5b6c;font-size:12px;margin-bottom:8px}
+.docbox hr{border:none;border-top:1px dashed var(--line);margin:8px 0}
+.selfbox{background:var(--brand-l);border:1px solid #bcd9ef;border-radius:8px;padding:12px;margin-bottom:14px}
+.selfbox .row{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:2px 0}
+.selfbox .row b{font-weight:600}
+
+.pad{border:2px dashed var(--brand);border-radius:10px;background:#fff;position:relative;overflow:hidden;
+  touch-action:none;cursor:crosshair}
+.pad canvas{display:block;width:100%;touch-action:none}
+.pad .ph{position:absolute;inset:0;display:grid;place-items:center;color:#9ab;font-size:13px;pointer-events:none}
+.pad-tools{display:flex;gap:8px;margin-top:8px}
+.chk{display:flex;gap:10px;align-items:flex-start;background:#fafbfc;border:1px solid var(--line);
+  border-radius:8px;padding:12px;margin:14px 0;font-size:13px}
+.chk input{width:19px;height:19px;margin-top:2px;flex:none;accent-color:var(--brand)}
+.big{width:100%;padding:14px;font-size:15px;font-weight:600}
+.locbox{background:#f6f9fb;border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:12px;margin-top:10px}
+.locbox b{color:var(--brand-d)}
+
+.okmark{text-align:center;padding:20px 0}
+.okmark .ic{width:60px;height:60px;border-radius:50%;background:#e3f6ec;color:var(--ok);font-size:32px;
+  display:grid;place-items:center;margin:0 auto 12px}
+
+/* ============ A4 打印 ============ */
+@page{size:A4 portrait;margin:11mm 11mm 12mm}
+#print-root{display:none}
+@media print{
+  body{background:#fff}
+  .top,.wrap,.no-print,#app{display:none !important}
+  #print-root{display:block}
+  .pg{width:186mm;min-height:272mm;position:relative;page-break-after:always}
+  .pg:last-child{page-break-after:auto}
+  .p-hd{text-align:center;border-bottom:2px solid #000;padding-bottom:4mm;margin-bottom:3mm}
+  .p-hd .cn1{font-weight:700;font-size:11.5pt;letter-spacing:.2px}
+  .p-hd .cn2{font-size:9pt;text-decoration:underline;font-weight:600;margin-top:1mm;letter-spacing:.4px}
+  .p-hd .cn3{font-size:8.5pt;margin-top:1mm}
+  .p-hd .dt{font-size:9pt;font-style:italic;text-align:right;margin-top:1mm}
+  .p-ttl{text-align:center;margin:3mm 0 2mm}
+  .p-ttl .v{font-size:12.5pt;font-weight:700}
+  .p-ttl .c{font-size:11pt;font-weight:600;margin-top:.5mm}
+  .p-body{font-size:9pt;line-height:1.5;margin-bottom:3mm}
+  .p-body .k{font-weight:700}
+  .p-body .vi{font-size:8.6pt}
+  .p-body p{margin-bottom:1.6mm}
+  .p-cont{font-size:8pt;font-style:italic;text-align:center;margin-bottom:2mm}
+  table.pt{width:100%;border-collapse:collapse;table-layout:fixed}
+  table.pt th,table.pt td{border:1px solid #333;padding:1mm;font-size:8pt;vertical-align:middle;
+    text-align:center;word-break:break-word;line-height:1.25}
+  table.pt th{background:#f0f0f0 !important;font-size:7.6pt;font-weight:700;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  table.pt td.nm{text-align:left;font-size:7.4pt}
+  .sg{display:block;margin:0 auto;max-width:38mm;height:7mm;object-fit:contain}
+  .sg-empty{height:7mm}
+  .tm{font-size:6.4pt;line-height:1.2;margin-top:.6mm;color:#222}
+  .tm.dec{color:#000;font-weight:700}
+  .tm .code{font-family:Consolas,monospace;font-size:6pt}
+  .ft{position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:space-between;
+    font-size:7.5pt;color:#555;border-top:1px solid #ccc;padding-top:1mm}
+  .sign-row{display:flex;gap:12mm;margin-top:6mm;font-size:8.5pt}
+  .sign-row div{flex:1;text-align:center}
+  .sign-row .ln{height:14mm}
+}
+
+/* 意向选择（愿意 / 不愿意） */
+.choice{display:grid;gap:10px;margin:6px 0 4px}
+.opt{border:2px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer;transition:.15s;background:#fff}
+.opt:hover{border-color:#9dc2df}
+.opt.on{border-color:var(--brand);background:var(--brand-l)}
+.opt.on.dec{border-color:var(--err);background:#fdeceb}
+.opt label{display:flex;gap:10px;align-items:flex-start;margin:0;cursor:pointer}
+.opt input[type=radio]{width:19px;height:19px;margin-top:2px;flex:none;accent-color:var(--brand)}
+.opt b{font-size:14px;display:block;color:var(--ink)}
+.opt .mini{display:block;font-weight:400;margin-top:3px;font-size:12px;line-height:1.5}
+#signArea{display:none}
+.p-sum{font-size:8.5pt;border:1px solid #333;background:#f0f0f0 !important;padding:1.2mm;
+  margin-bottom:2mm;text-align:center;font-weight:700;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+.big-sel{width:100%;padding:12px 14px;font-size:15px;border:2px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+.big-sel:focus{border-color:var(--brand);outline:none}
+
+.cols-wrap{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.colmap{flex:1 1 130px;min-width:120px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px}
+.cm-h{font-size:11px;color:#5a6b7c;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.colmap select{width:100%;padding:7px 8px;font-size:13px;border:1px solid var(--line);border-radius:6px;background:#fff}
+.mini-tb td,.mini-tb th{font-size:12px;padding:5px 7px}
+
+.modal-mask{position:fixed;inset:0;background:rgba(9,26,45,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:18px}
+.modal-box{background:#fff;border-radius:12px;max-width:520px;width:100%;padding:20px 22px;box-shadow:0 18px 50px rgba(9,26,45,.3);max-height:80vh;overflow:auto}
+.modal-box h3{margin:0 0 10px;font-size:16px;color:#0b2545}
+.modal-body p{margin:0 0 10px;line-height:1.7}
+.modal-box .notice,.modal-box .notice.info{margin-top:8px}
+
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="print-root"></div>
+<script>
+(function () {
+  var EXP = new Array(512), LOG = new Array(256);
+  (function () {
+    var x = 1;
+    for (var i = 0; i < 255; i++) { EXP[i] = x; LOG[x] = i; x <<= 1; if (x & 0x100) x ^= 0x11d; }
+    for (var i = 255; i < 512; i++) EXP[i] = EXP[i - 255];
+  })();
+  function gmul(a, b) { if (a === 0 || b === 0) return 0; return EXP[LOG[a] + LOG[b]]; }
+  var RS = [
+    [1,26,19],[1,26,16],[1,26,13],[1,26,9],
+    [1,44,34],[1,44,28],[1,44,22],[1,44,16],
+    [1,70,55],[1,70,44],[2,35,17],[2,35,13],
+    [1,100,80],[2,50,32],[2,50,24],[4,25,9],
+    [1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],
+    [2,86,68],[4,43,27],[4,43,19],[4,43,15],
+    [2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],
+    [2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],
+    [2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],
+    [2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16]
+  ];
+  var EC_ORDER = ['L','M','Q','H'], EC_BITS = { L: 1, M: 0, Q: 3, H: 2 };
+  var ALIGN = [null,[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50]];
+  function genPoly(n) {
+    var g = [1];
+    for (var i = 0; i < n; i++) {
+      var ng = new Array(g.length + 1);
+      for (var k = 0; k < ng.length; k++) ng[k] = 0;
+      for (var j = 0; j < g.length; j++) { ng[j] ^= g[j]; ng[j + 1] ^= gmul(g[j], EXP[i]); }
+      g = ng;
+    }
+    return g;
+  }
+  function rsEncode(data, ecCount) {
+    var gen = genPoly(ecCount);
+    var res = data.concat(new Array(ecCount).fill(0));
+    for (var i = 0; i < data.length; i++) {
+      var coef = res[i];
+      if (coef !== 0) for (var j = 0; j < gen.length; j++) res[i + j] ^= gmul(gen[j], coef);
+    }
+    return res.slice(data.length);
+  }
+  function utf8Bytes(str) {
+    var out = [], i, c;
+    for (i = 0; i < str.length; i++) {
+      c = str.charCodeAt(i);
+      if (c < 0x80) out.push(c);
+      else if (c < 0x800) out.push(0xc0 | (c >> 6), 0x80 | (c & 63));
+      else if (c >= 0xd800 && c < 0xdc00 && i + 1 < str.length) {
+        var c2 = str.charCodeAt(++i);
+        var cp = 0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00);
+        out.push(0xf0 | (cp >> 18), 0x80 | ((cp >> 12) & 63), 0x80 | ((cp >> 6) & 63), 0x80 | (cp & 63));
+      } else out.push(0xe0 | (c >> 12), 0x80 | ((c >> 6) & 63), 0x80 | (c & 63));
+    }
+    return out;
+  }
+  function bitLength(n) { var l = 0; while (n !== 0) { l++; n >>>= 1; } return l; }
+  function bchFormat(data) {
+    var d = data << 10;
+    while (bitLength(d) - 11 >= 0) d ^= 0x537 << (bitLength(d) - 11);
+    return ((data << 10) | d) ^ 0x5412;
+  }
+  function bchVersion(v) {
+    var d = v << 12;
+    while (bitLength(d) - 13 >= 0) d ^= 0x1f25 << (bitLength(d) - 13);
+    return (v << 12) | d;
+  }
+  function chooseVersion(len, ecIdx) {
+    for (var v = 1; v <= 10; v++) {
+      var b = RS[(v - 1) * 4 + ecIdx], total = 0;
+      for (var i = 0; i < b.length; i += 3) total += b[i] * b[i + 2];
+      if (total * 8 >= len * 8 + 8 + (v < 10 ? 8 : 16)) return v;
+    }
+    return -1;
+  }
+  function makeMatrix(text, ecLevel) {
+    var ecIdx = EC_ORDER.indexOf(ecLevel || 'M'); if (ecIdx < 0) ecIdx = 1;
+    var bytes = utf8Bytes(text);
+    var version = chooseVersion(bytes.length, ecIdx);
+    if (version < 0) throw new Error('内容过长');
+    var size = version * 4 + 17, m = [], i, j;
+    for (i = 0; i < size; i++) { m.push(new Array(size)); for (j = 0; j < size; j++) m[i][j] = null; }
+    function finder(r, c) {
+      for (var dr = -1; dr <= 7; dr++) for (var dc = -1; dc <= 7; dc++) {
+        var rr = r + dr, cc = c + dc;
+        if (rr < 0 || rr >= size || cc < 0 || cc >= size) continue;
+        if (dr >= 0 && dr <= 6 && (dc === 0 || dc === 6)) m[rr][cc] = true;
+        else if (dc >= 0 && dc <= 6 && (dr === 0 || dr === 6)) m[rr][cc] = true;
+        else if (dr >= 2 && dr <= 4 && dc >= 2 && dc <= 4) m[rr][cc] = true;
+        else m[rr][cc] = false;
+      }
+    }
+    finder(0, 0); finder(0, size - 7); finder(size - 7, 0);
+    var pos = ALIGN[version - 1];
+    if (pos) for (i = 0; i < pos.length; i++) for (j = 0; j < pos.length; j++) {
+      var r0 = pos[i], c0 = pos[j];
+      if ((r0 === 6 && c0 === 6) || (r0 === 6 && c0 === size - 7) || (r0 === size - 7 && c0 === 6)) continue;
+      for (var dr2 = -2; dr2 <= 2; dr2++) for (var dc2 = -2; dc2 <= 2; dc2++)
+        m[r0 + dr2][c0 + dc2] = (Math.abs(dr2) === 2 || Math.abs(dc2) === 2 || (dr2 === 0 && dc2 === 0));
+    }
+    for (i = 8; i < size - 8; i++) {
+      if (m[6][i] === null) m[6][i] = i % 2 === 0;
+      if (m[i][6] === null) m[i][6] = i % 2 === 0;
+    }
+    m[size - 8][8] = true;
+    for (i = 0; i < 9; i++) { if (m[8][i] === null) m[8][i] = false; if (m[i][8] === null) m[i][8] = false; }
+    for (i = 0; i < 8; i++) { if (m[8][size - 1 - i] === null) m[8][size - 1 - i] = false; if (m[size - 1 - i][8] === null) m[size - 1 - i][8] = false; }
+    if (version >= 7) for (i = 0; i < 6; i++) for (j = 0; j < 3; j++) { m[size - 11 + j][i] = false; m[i][size - 11 + j] = false; }
+
+    var bits = [];
+    function push(val, len) { for (var k = len - 1; k >= 0; k--) bits.push((val >>> k) & 1); }
+    push(4, 4); push(bytes.length, version < 10 ? 8 : 16);
+    for (i = 0; i < bytes.length; i++) push(bytes[i], 8);
+    var capBits = 0, blocks = RS[(version - 1) * 4 + ecIdx];
+    for (i = 0; i < blocks.length; i += 3) capBits += blocks[i] * blocks[i + 2] * 8;
+    for (i = 0; i < 4 && bits.length < capBits; i++) bits.push(0);
+    while (bits.length % 8 !== 0) bits.push(0);
+    var dataBytes = [];
+    for (i = 0; i < bits.length; i += 8) { var b = 0; for (j = 0; j < 8; j++) b = (b << 1) | bits[i + j]; dataBytes.push(b); }
+    var padI = 0;
+    while (dataBytes.length < capBits / 8) { dataBytes.push(padI++ % 2 === 0 ? 0xEC : 0x11); }
+
+    var dBlocks = [], eBlocks = [], off = 0;
+    for (i = 0; i < blocks.length; i += 3) {
+      var cnt = blocks[i], total = blocks[i + 1], dcnt = blocks[i + 2];
+      for (j = 0; j < cnt; j++) {
+        var chunk = dataBytes.slice(off, off + dcnt); off += dcnt;
+        dBlocks.push(chunk); eBlocks.push(rsEncode(chunk, total - dcnt));
+      }
+    }
+    var final = [];
+    var maxD = Math.max.apply(null, dBlocks.map(function (x) { return x.length; }));
+    for (i = 0; i < maxD; i++) for (j = 0; j < dBlocks.length; j++) if (i < dBlocks[j].length) final.push(dBlocks[j][i]);
+    var maxE = Math.max.apply(null, eBlocks.map(function (x) { return x.length; }));
+    for (i = 0; i < maxE; i++) for (j = 0; j < eBlocks.length; j++) if (i < eBlocks[j].length) final.push(eBlocks[j][i]);
+
+    var masks = [
+      function (r, c) { return (r + c) % 2 === 0; },
+      function (r) { return r % 2 === 0; },
+      function (r, c) { return c % 3 === 0; },
+      function (r, c) { return (r + c) % 3 === 0; },
+      function (r, c) { return (Math.floor(r / 2) + Math.floor(c / 3)) % 2 === 0; },
+      function (r, c) { return (r * c) % 2 + (r * c) % 3 === 0; },
+      function (r, c) { return ((r * c) % 2 + (r * c) % 3) % 2 === 0; },
+      function (r, c) { return ((r + c) % 2 + (r * c) % 3) % 2 === 0; }
+    ];
+    function place(maskId) {
+      var mm = m.map(function (row) { return row.slice(); });
+      var f = masks[maskId], inc = -1, row = size - 1, bitIndex = 7, byteIndex = 0;
+      for (var col = size - 1; col > 0; col -= 2) {
+        if (col === 6) col--;
+        while (true) {
+          for (var c2 = 0; c2 < 2; c2++) {
+            if (mm[row][col - c2] === null) {
+              var dark = false;
+              if (byteIndex < final.length) dark = ((final[byteIndex] >>> bitIndex) & 1) === 1;
+              if (f(row, col - c2)) dark = !dark;
+              mm[row][col - c2] = dark;
+              bitIndex--;
+              if (bitIndex === -1) { byteIndex++; bitIndex = 7; }
+            }
+          }
+          row += inc;
+          if (row < 0 || size <= row) { row -= inc; inc = -inc; break; }
+        }
+      }
+      var fmt = bchFormat((EC_BITS[EC_ORDER[ecIdx]] << 3) | maskId);
+      for (var k = 0; k < 15; k++) {
+        var bit = ((fmt >> k) & 1) === 1;
+        var vr = k < 6 ? k : (k < 8 ? k + 1 : size - 15 + k);
+        mm[vr][8] = bit;
+        var hc = k < 8 ? size - 1 - k : (k === 8 ? 7 : 15 - k - 1);
+        mm[8][hc] = bit;
+      }
+      return mm;
+    }
+    function penalty(mm) {
+      var p = 0, r, c, run;
+      for (r = 0; r < size; r++) { run = 1; for (c = 1; c < size; c++) { if (mm[r][c] === mm[r][c - 1]) { run++; if (run === 5) p += 3; else if (run > 5) p++; } else run = 1; } }
+      for (c = 0; c < size; c++) { run = 1; for (r = 1; r < size; r++) { if (mm[r][c] === mm[r - 1][c]) { run++; if (run === 5) p += 3; else if (run > 5) p++; } else run = 1; } }
+      for (r = 0; r < size - 1; r++) for (c = 0; c < size - 1; c++) {
+        var v0 = mm[r][c];
+        if (v0 === mm[r][c + 1] && v0 === mm[r + 1][c] && v0 === mm[r + 1][c + 1]) p += 3;
+      }
+      var dark = 0;
+      for (r = 0; r < size; r++) for (c = 0; c < size; c++) if (mm[r][c]) dark++;
+      p += 10 * Math.floor(Math.abs(dark * 100 / (size * size) - 50) / 5);
+      return p;
+    }
+    var best = null, bestP = Infinity;
+    for (i = 0; i < 8; i++) { var cand = place(i), cp = penalty(cand); if (cp < bestP) { bestP = cp; best = cand; } }
+    if (version >= 7) {
+      var vi = bchVersion(version);
+      for (i = 0; i < 18; i++) {
+        var b2 = ((vi >> i) & 1) === 1;
+        var r3 = Math.floor(i / 3), c3 = i % 3;
+        best[r3][size - 11 + c3] = b2; best[size - 11 + c3][r3] = b2;
+      }
+    }
+    return best;
+  }
+  window.QRGEN = { make: makeMatrix };
+})();
+
+</script>
+<script>
+/* ================= 存储 ================= */
+var KEY = 'OT_AGREEMENT_V1';
+var DB = { docs: [] };
+function load() {
+  try { var r = localStorage.getItem(KEY); if (r) DB = JSON.parse(r); } catch (e) { }
+  if (!DB.docs) DB.docs = [];
+}
+/* ================= 存储：本地演示 / 服务器 ================= */
+var API = { base: '', on: false, mode: 'local', err: '' };
+function apiUrl() { return API.base; }
+function apiGet(path) {
+  return fetch(API.base + path, { cache: 'no-store' }).then(function (r) { return r.json(); });
+}
+function apiPost(path, obj) {
+  return fetch(API.base + path, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(obj || {})
+  }).then(function (r) { return r.json(); });
+}
+/* 探测后端：地址栏 ?api= 优先，其次同源 /api */
+function apiDetect(cb) {
+  var cands = [];
+  var q = new URLSearchParams(location.search);
+  var forced = q.get('api');
+  if (forced) cands.push(forced.replace(/\/+$/, ''));
+  // 已保存的云后端地址（GitHub Pages 托管时，前端与后端不同域，必须显式指定）
+  try {
+    var saved = localStorage.getItem('OT_API_BASE');
+    if (saved) cands.push(saved.replace(/\/+$/, ''));
+  } catch (e) { }
+  if (location.protocol === 'http:' || location.protocol === 'https:') {
+    cands.push(location.origin + '/api');
+  }
+  var i = 0;
+  (function next() {
+    if (i >= cands.length) { API.on = false; API.mode = 'local'; cb(false); return; }
+    var base = cands[i++];
+    fetch(base + '/ping', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (j && j.ok) {
+          API.base = base; API.on = true; API.mode = 'server';
+          try { localStorage.setItem('OT_API_BASE', base); } catch (e) { }
+          cb(true);
+        } else next();
+      }).catch(function () { next(); });
+  })();
+}
+/* 服务器模式下，单据改动防抖上传（万人名单避免每次敲键都传） */
+var _syncT = null;
+function scheduleSync(d) {
+  if (!API.on || !d) return;
+  if (_syncT) clearTimeout(_syncT);
+  _syncT = setTimeout(function () {
+    _syncT = null;
+    API.err = '';
+    apiPost('/doc', { doc: d }).then(function (j) {
+      if (!j.ok) API.err = j.err || '同步失败';
+      paintMode();
+    }).catch(function (e) { API.err = '同步失败：' + e.message; paintMode(); });
+  }, 1200);
+}
+function paintMode() {
+  var el = document.getElementById('modeTag');
+  if (!el) return;
+  if (API.on) {
+    el.className = 'pill ok';
+    el.innerHTML = '已连接服务器 · 员工外网可直接填写' + (API.err ? ' <b style="color:#c0392b">（' + esc(API.err) + '）</b>' : '');
+  } else {
+    el.className = 'pill wait';
+    el.innerHTML = '本地演示模式 · 未接服务器';
+  }
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(DB)); }
+  catch (e) {
+    if (!API.on) { infoBox('本地存储空间不足', '<p>请删除部分历史单据后重试。</p>'); return false; }
+  }
+  paintMode();
+  return true;
+}
+function esc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function uid() {
+  return 'OT' + new Date().getFullYear().toString().slice(2) +
+    String(new Date().getMonth() + 1).padStart(2, '0') +
+    String(new Date().getDate()).padStart(2, '0') + '-' +
+    Math.random().toString(36).slice(2, 6).toUpperCase();
+}
+function hash6(s) {
+  var h = 5381;
+  for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  return (h >>> 0).toString(36).toUpperCase().padStart(6, '0').slice(-6);
+}
+function nowStr(d) {
+  d = d || new Date();
+  var p = function (n) { return String(n).padStart(2, '0'); };
+  return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+}
+
+/* ================= 默认范本（来自贵司实际单据） ================= */
+function demoDoc() {
+  var t = new Date();
+  return {
+    id: uid(),
+    docNo: 'GL/OT-2025-0902',
+    companyVi: 'CÔNG TY TNHH GAIN LUCKY (VIỆT NAM)',
+    companyCn: '德利（越南）有限公司',
+    dy: '2025', dm: '08', dd: '08',
+    holidayVi: 'Thời gian nghỉ lễ Quốc khánh 2025: Ngày 01/09/2025 và 02/09/2025',
+    holidayCn: '2025年国庆节放假时间为两天：9月1日和9月2日',
+    reasonVi: 'Để hoàn thành tiến độ đơn hàng, công ty có kế hoạch sắp xếp công nhân viên đi làm thêm. Ngoài 100% tiền lương ngày nghỉ lễ ra, căn cứ theo quy định của Luật lao động hiện hành để tính tiền lương làm thêm.',
+    reasonCn: '加班原因：为了完成公司紧急订单',
+    shifts: [
+      {
+        vi: 'Ca đêm 31/08/2025: Thời gian làm thêm từ 20:00 ngày 31/08/2025 đến 08:00 ngày 01/09/2025: Khoảng thời gian từ 20:00 đến 24:00 ngày 31/08/2025 sẽ tính tăng ca 150%; Khoảng thời gian từ 00:00 đến 08:00 ngày 01/09/2025 sẽ tính tăng ca 300%;',
+        cn: '8月31日夜班加班：时间自8月31日20点至9月1日08点：8月31日20点至24点享受150%加班工资；9月1日00点至8点享受300%加班工资；'
+      },
+      {
+        vi: 'Ca ngày của ngày 01/09/2025: Thời gian làm thêm từ 08:00 - 20:00, sẽ tính tăng ca 300%;',
+        cn: '9月1日白班加班：加班时间自8点至20点，享受300%加班工资；'
+      },
+      {
+        vi: 'Ca C rớt ca của ngày 02/09/2025 trùng với ngày lễ sẽ được bù ngày nghỉ ca vào ngày 03/09/2025. Ca C ca ngày của ngày 03/09/2025 làm thêm vào ngày nghỉ ca: Thời gian làm thêm từ 08:00 - 20:00, sẽ tính tăng ca 150%;',
+        cn: '由于9月2日C班轮休与节日放假时间重叠，故9月3日C班上班除正常工资外，额外享受150%的加班工资作为补休轮一天的补偿。'
+      }
+    ],
+    workPlaces: ['德利厂区 / Nhà máy Gain Lucky'],
+    baseUrl: '',
+    showRepSign: true,
+    createdAt: new Date().toISOString(),
+    employees: [
+      { empNo: '14027464', nameVi: 'TRỊNH THỊ SƠN LOAN', nameCn: '郑氏山鸾', dept: '化验室', shift: 'B', sign: null },
+      { empNo: '14027593', nameVi: 'TRƯƠNG THỊ HIỆP', nameCn: '张氏协', dept: '化验室', shift: 'B', sign: null },
+      { empNo: '14027604', nameVi: 'NGUYỄN THỊ MINH LÝ', nameCn: '阮氏明李', dept: '化验室', shift: 'A', sign: null }
+    ]
+  };
+}
+
+/* ================= 状态 ================= */
+var S = { tab: 'hr', view: 'list', docId: null, cur: null, q: '', page: 0, prtDept: '' };
+var EMP = { doc: null, me: null };
+var DEPTV = null;   // 车间只读视图：{doc, dept, key}
+
+function getDoc(id) { for (var i = 0; i < DB.docs.length; i++) if (DB.docs[i].id === id) return DB.docs[i]; return null; }
+
+/* ================= 路由 ================= */
+function boot() {
+  load();
+  apiDetect(function () {
+    var q = new URLSearchParams(location.search);
+    var docId = q.get('doc');
+    var dept = q.get('dept'), key = q.get('key');
+    if (docId && q.get('view')) { renderDeptLogin(docId); return; }
+    if (docId && dept && key) { renderDeptView(docId, dept, key); return; }
+    if (docId) {
+      var d = getDoc(docId);
+      if (d) { renderEmp(docId); return; }
+      if (API.on) { renderEmp(docId); return; }        // 服务器模式：名单在服务器上
+      document.getElementById('app').innerHTML =
+        '<div class="wrap"><div class="card"><h2>未找到该单据</h2>' +
+        '<p class="hint">编号 <b>' + esc(docId) + '</b> 在本机上不存在。' +
+        '请确认扫码地址与 HR 签发时一致；若用服务器模式，需通过服务器地址访问。</p></div></div>';
+      return;
+    }
+    S.tab = 'hr'; S.view = 'list';
+    renderShell();
+  });
+}
+
+function renderShell() {
+  var app = document.getElementById('app');
+  app.innerHTML =
+    '<div class="top"><div><h1>自愿加班协商书 · 电子签署系统</h1>' +
+    '<div class="sub">VĂN BẢN THỎA THUẬN TỰ NGUYỆN LÀM THÊM GIỜ · 手写签名 + 时间地点存证 + A4 验厂打印</div></div>' +
+    '<div class="tabs"><button id="t-hr" class="on">HR 管理端</button>' +
+    '<button id="t-emp">员工签字端（预览）</button>' +
+    '<button id="t-help">使用说明</button></div>' +
+    '<span id="modeTag" class="pill wait" style="margin-left:10px">检测中…</span></div>' +
+    '<div class="wrap" id="body"></div>';
+  document.getElementById('t-hr').onclick = function () { S.tab = 'hr'; renderShell(); };
+  document.getElementById('t-emp').onclick = function () { S.tab = 'emp'; renderShell(); };
+  document.getElementById('t-help').onclick = function () { S.tab = 'help'; renderShell(); };
+  var tb = document.getElementById('t-' + S.tab); if (tb) { tb.className = 'on'; }
+  paintMode();
+  if (S.tab === 'hr') renderHR(); else if (S.tab === 'emp') renderEmpPreview(); else renderHelp();
+}
+
+
+/* ================= 统计（按部门 / 按厂区） ================= */
+function calcStats(list) {
+  var total = list.length, ag = 0, dec = 0, no = 0;
+  var byDept = {}, byPlace = {};
+  function bucket(m, k, e) {
+    if (!m[k]) m[k] = { dept: k, total: 0, agree: 0, decline: 0, none: 0 };
+    var b = m[k]; b.total++;
+    var c = choiceOf(e.sign);
+    if (c === null || c === '') b.none++;
+    else if (c === 'decline') b.decline++;
+    else b.agree++;
+  }
+  list.forEach(function (e) {
+    var c = choiceOf(e.sign);
+    if (c === null || c === '') no++;
+    else if (c === 'decline') dec++;
+    else ag++;
+    bucket(byDept, ((e.dept || '').trim() || '未填部门'), e);
+    bucket(byPlace, pickWorkPlace(e) || '未选择', e);
+  });
+  function fin(m) {
+    var out = Object.keys(m).map(function (k) { return m[k]; });
+    out.sort(function (a, b) { return b.total - a.total; });
+    out.forEach(function (b) { b.rate = b.total ? Math.round(b.agree * 100 / b.total) : 0; });
+    return out;
+  }
+  return { total: total, agree: ag, decline: dec, none: no,
+    rate: total ? Math.round(ag * 100 / total) : 0, byDept: fin(byDept), byPlace: fin(byPlace) };
+}
+function statTable(rows, title, keyName) {
+  if (!rows.length) return '';
+  var h = '<div class="card"><h2>' + title + '</h2><p class="hint">点表头可切换排序；「完成率」= 同意人数 / 该组总人数</p>' +
+    '<div class="tbl-wrap"><table><thead><tr><th>' + keyName + '</th><th>总人数</th><th>同意</th><th>不同意</th><th>未响应</th><th style="width:150px">完成率</th></tr></thead><tbody>';
+  rows.forEach(function (b) {
+    var pct = b.rate;
+    h += '<tr><td><b>' + esc(b.dept) + '</b></td><td>' + b.total + '</td>' +
+      '<td style="color:var(--ok);font-weight:600">' + b.agree + '</td>' +
+      '<td style="color:var(--err);font-weight:600">' + b.decline + '</td>' +
+      '<td style="color:var(--warn);font-weight:600">' + b.none + '</td>' +
+      '<td><div style="background:#eef2f6;border-radius:4px;height:16px;position:relative;overflow:hidden">' +
+      '<div style="background:' + (pct === 100 ? '#1a8a55' : '#c8811a') + ';height:100%;width:' + pct + '%"></div>' +
+      '<span style="position:absolute;inset:0;text-align:center;font-size:11px;line-height:16px">' + pct + '%</span></div></td></tr>';
+  });
+  h += '</tbody></table></div></div>';
+  return h;
+}
+
+/* ================= 车间只读视图 ================= */
+/* ===== 部门进度查询：授权人填自己工号进入 ===== */
+function renderDeptLogin(docId) {
+  var app = document.getElementById('app');
+  app.innerHTML = '<div class="top"><div><h1>部门签署进度查询</h1>' +
+    '<div class="sub">请输入你的工号，查看本部门签署情况（只读）</div></div></div>' +
+    '<div class="wrap" id="body"></div>';
+  var draw = function (err) {
+    document.getElementById('body').innerHTML =
+      '<div class="card"><h2>部门签署进度查询</h2>' +
+      '<p class="hint">由 HR 预先设定哪些工号可以查看；输入工号后只显示你所属部门的结果</p>' +
+      '<div class="login-big"><label style="text-align:center">请输入工号 / Nhập số thẻ</label>' +
+      '<input id="vno" placeholder="例如 14027464" inputmode="numeric" autocomplete="off"></div>' +
+      '<button class="big" id="vgo" style="margin-top:12px">查看本部门进度</button>' +
+      '<div id="vem" style="margin-top:10px"></div></div>';
+    var inp = document.getElementById('vno');
+    document.getElementById('vgo').onclick = go;
+    inp.onkeydown = function (e) { if (e.key === 'Enter') go(); };
+    inp.focus();
+    if (err) { vem(err, true); }
+    function vem(t, bad) { document.getElementById('vem').innerHTML = '<div class="notice' + (bad ? '' : ' info') + '">' + esc(t) + '</div>'; }
+    function go() {
+      var v = inp.value.trim();
+      if (!v) { vem('请输入工号', true); return; }
+      vem('正在核对…', false);
+      lookupViewer(docId, v, function (res) {
+        if (!res.ok) { vem(res.err || '无法查询', true); return; }
+        renderDeptView(docId, res.dept, res.key || '');
+      });
+    }
+  };
+  draw();
+}
+/* 先问服务器，服务器不可用时退回本地授权表 */
+function lookupViewer(docId, empNo, cb) {
+  if (API.on) {
+    apiGet('/viewer/' + encodeURIComponent(docId) + '?empno=' + encodeURIComponent(empNo))
+      .then(function (j) { cb(j); }).catch(function (e) { cb(lookupViewerLocal(docId, empNo)); });
+    return;
+  }
+  cb(lookupViewerLocal(docId, empNo));
+}
+function lookupViewerLocal(docId, empNo) {
+  var d = getDoc(docId);
+  if (!d) return { ok: false, err: '本机没有该单据' };
+  var v = (d.viewers || []).filter(function (x) { return String(x.empNo).trim() === String(empNo).trim(); })[0];
+  if (!v) return { ok: false, err: '工号 ' + empNo + ' 未获授权查看，请联系 HR 添加' };
+  return { ok: true, dept: v.dept, key: localDeptKey(docId, v.dept) };
+}
+function renderDeptView(docId, dept, key) {
+  var app = document.getElementById('app');
+  app.innerHTML = '<div class="top"><div><h1>车间签署进度（只读）</h1>' +
+    '<div class="sub">' + esc(dept) + ' · 本视图仅显示本车间数据</div></div></div>' +
+    '<div class="wrap" id="body"><div class="empty">正在加载…</div></div>';
+  var done = function (doc, errMsg) {
+    if (!doc) {
+      document.getElementById('body').innerHTML =
+        '<div class="card"><h2>无法打开车间视图</h2><p class="hint">' + esc(errMsg || '请向 HR 索取最新链接') + '</p></div>';
+      return;
+    }
+    DEPTV = { doc: doc, dept: dept, key: key };
+    renderDeptBody();
+  };
+  if (API.on) {
+    apiGet('/doc/' + encodeURIComponent(docId) + '?dept=' + encodeURIComponent(dept) + '&key=' + encodeURIComponent(key))
+      .then(function (j) { done(j.ok ? j.doc : null, j.err); })
+      .catch(function (e) { done(null, '网络异常：' + e.message); });
+  } else {
+    var d = getDoc(docId);
+    if (!d) { done(null, '本机没有该单据'); return; }
+    if (localDeptKey(docId, dept) !== String(key).toUpperCase()) { done(null, '查看码无效，请联系 HR 重新获取'); return; }
+    var copy = JSON.parse(JSON.stringify(d));
+    copy.employees = d.employees.filter(function (e) { return ((e.dept || '').trim()) === dept; });
+    done(copy);
+  }
+}
+function localDeptKey(docId, dept) {
+  var h = 5381, str = docId + '|' + dept + '|local';
+  for (var i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0;
+  return (h >>> 0).toString(16).toUpperCase().padStart(12, '0').slice(-12);
+}
+function renderDeptBody() {
+  var d = DEPTV.doc, dept = DEPTV.dept;
+  var list = d.employees;
+  var st = calcStats(list);
+  var rows = '';
+  list.forEach(function (e, i) {
+    var s = e.sign, c = choiceOf(s);
+    rows += '<tr><td>' + (i + 1) + '</td><td class="mono">' + esc(e.empNo) + '</td>' +
+      '<td>' + esc(e.nameVi) + (e.nameCn ? '<div class="mini">' + esc(e.nameCn) + '</div>' : '') + '</td>' +
+      '<td>' + esc(e.shift) + '</td>' +
+      '<td>' + (c === 'decline' ? '<span class="pill no">不同意</span>' : c === 'agree' ? '<span class="pill ok">同意</span>' : '<span class="pill wait">未响应</span>') + '</td>' +
+      '<td class="mini">' + (s ? esc(s.time) : '—') + '</td>' +
+      '<td class="mini">' + esc(pickWorkPlace(e)) + '</td></tr>';
+  });
+  document.getElementById('body').innerHTML =
+    '<div class="card"><h2>' + esc(dept) + ' · 签署进度</h2>' +
+    '<p class="hint">' + esc(d.docNo || d.id) + ' · ' + esc(d.companyCn || '') + ' · ' +
+    '只读视图，不能修改或查看其他车间</p>' +
+    '<div class="bar" style="margin-bottom:12px">' +
+    '<b style="font-size:16px">同意 <span style="color:var(--ok)">' + st.agree + '</span>' +
+    ' · 不同意 <span style="color:var(--err)">' + st.decline + '</span>' +
+    ' · 未响应 <span style="color:var(--warn)">' + st.none + '</span>' +
+    ' <span class="mini">/ 共 ' + st.total + ' 人</span></b>' +
+    '<span class="pill ' + (st.rate === 100 ? 'ok' : 'wait') + '">完成率 ' + st.rate + '%</span>' +
+    '<span class="sp"></span>' +
+    '<button class="ghost" id="rf">刷新</button>' +
+    '<button class="sec" id="dc">导出本车间 CSV</button>' +
+    '<button id="dp">打印本车间</button></div>' +
+    '<div class="tbl-wrap"><table><thead><tr><th>STT</th><th>工号</th><th>姓名</th><th>班组</th><th>状态</th><th>签名时间</th><th>地点</th></tr></thead><tbody>' +
+    (rows || '<tr><td colspan="7" class="empty">本车间暂无人员</td></tr>') + '</tbody></table></div></div>';
+  document.getElementById('rf').onclick = function () { renderDeptView(d.id, dept, DEPTV.key); };
+  document.getElementById('dp').onclick = function () { doPrint(d, dept); };
+  document.getElementById('dc').onclick = function () {
+    var lines = ['\ufeffSTT,工号,姓名(越),姓名(中),部门,班组,意向,签名时间,签名地点,防伪码'];
+    list.forEach(function (e, i) {
+      var s = e.sign || {}, c = choiceOf(s);
+      lines.push([i + 1, e.empNo, e.nameVi, e.nameCn, e.dept, e.shift,
+        c === 'decline' ? '不同意加班' : c === 'agree' ? '自愿加班' : '未响应',
+        s.time || '', pickWorkPlace(e), s.hash || ''].map(csvq).join(','));
+    });
+    download('车间进度_' + dept + '_' + (d.docNo || d.id) + '.csv', lines.join('\n'));
+  };
+}
+function csvq(x) { return '"' + String(x == null ? '' : x).replace(/"/g, '""') + '"'; }
+
+/* ================= 使用说明 ================= */
+function renderHelp() {
+  document.getElementById('body').innerHTML =
+    '<div class="card"><h2>导入名单：解析后会先让你核对</h2>' +
+    '<p class="hint">表头怎么写都能认，认不准也能一眼看出来并改正</p>' +
+    '<table><tr><th style="width:60px">步骤</th><th>说明</th></tr>' +
+    '<tr><td>①</td><td>在 Excel 里框选名单（<b>连表头一起</b>）复制，粘贴进程序；或上传 CSV / XLSX</td></tr>' +
+    '<tr><td>②</td><td>点「解析」，程序按<b>表头文字</b>判断每列是什么（支持越语 / 中文 / 双语 / 单元格内换行）</td></tr>' +
+    '<tr><td>③</td><td>出现<b>解析预览</b>：列出识别到多少行、每列的角色、前 3 行样例。' +
+    '哪一列认错了，直接在预览里改对应下拉框，会立刻重新解析</td></tr>' +
+    '<tr><td>④</td><td>预览底部有<b>解析结果对照</b>，直接列出前 3 人的「越文名 / 中文名 / 部门 / 班组」，' +
+    '先看这里对不对，再点「确认导入」</td></tr>' +
+    '<tr><td>撤销</td><td>导错了点「撤销上次导入」，会按工号精确移除刚导入的那批人</td></tr></table>' +
+    '<div class="notice info">姓名分两列（越文名 / 中文名）也能自动区分：' +
+    '拉丁字母的那列当越文名，纯中文的那列当中文名；写在同一格用斜杠 ' +
+    '<span class="mono">NGUYỄN VĂN A/阮文甲</span> 也会自动拆开。</div>' +
+    '<div class="notice info">表头写得越规范越省事，例如 ' +
+    '<span class="mono">STT / Số thẻ / Họ tên / Bộ phận / Ca làm</span> 或 ' +
+    '<span class="mono">序号 / 工号 / 姓名 / 部门 / 班组</span>。' +
+    '没有表头也能认，但建议保留。</div></div>' +
+
+    '<div class="card"><h2>流程概览</h2><p class="hint">四个角色动作，全程 5 分钟</p>' +
+    '<div class="steps">' +
+    '<div class="step on"><span class="n">1</span>HR 填写加班时间 / 原因 / 加班费</div>' +
+    '<div class="step on"><span class="n">2</span>导入员工名单（Excel）</div>' +
+    '<div class="step on"><span class="n">3</span>生成二维码，发给产线</div>' +
+    '<div class="step on"><span class="n">4</span>员工扫码 → 工号登录 → 手写签字</div>' +
+    '</div>' +
+    '<table><tr><th style="width:80px">谁</th><th>做什么</th><th style="width:230px">系统记录</th></tr>' +
+    '<tr><td>HR</td><td>创建协商书，填写越南语 + 中文对照的加班时间、原因、加班费倍率</td><td>单据编号、创建时间</td></tr>' +
+    '<tr><td>HR</td><td>粘贴或上传 Excel 名单（工号 / 姓名 / 部门 / 班组）</td><td>名单快照</td></tr>' +
+    '<tr><td>HR</td><td>生成二维码，打印张贴或发到班组群</td><td>扫码地址</td></tr>' +
+    '<tr><td>员工</td><td>手机扫码 → 输入工号 → 阅读协议 → <b>选择「愿意」或「不愿意」</b> → 手写签名 → 提交</td>' +
+    '<td><b>签名笔迹、精确到分的时间、GPS 地点、防伪码、意向（同意/不同意）</b></td></tr>' +
+    '<tr><td>HR</td><td>看板查看进度，一键导出 A4 打印</td><td>完整存证，可直接交验厂</td></tr></table></div>' +
+
+    '<div class="card"><h2>「不愿意」也是正式选项</h2>' +
+    '<p class="hint">只让员工点「同意」，验厂时反而说不清：没签名的人到底是拒绝，还是根本没看到通知？</p>' +
+    '<table><tr><th style="width:150px">员工选择</th><th>系统记录</th><th style="width:220px">打印呈现</th></tr>' +
+    '<tr><td>我愿意加班</td><td>笔迹 + 时间 + 地点 + 防伪码，标记为「自愿」</td><td>签名下方印 ✓ Tự nguyện / 自愿</td></tr>' +
+    '<tr><td><b>我不愿意加班</b></td><td>同样记录笔迹 + 时间 + 地点 + 防伪码，标记为「不同意」</td><td>签名下方印 ✗ Không đồng ý / 不同意</td></tr>' +
+    '<tr><td>未响应</td><td>无任何记录</td><td>照常列印在表内、签名栏留空</td></tr></table>' +
+    '<div class="notice info">三种状态在首页汇总行<b>如实列明</b>（同意 X 人 · 不同意 Y 人 · 未响应 Z 人），' +
+    '验厂一眼可查——这比一份「全员都签了」的表更有说服力。<br>' +
+    '<b>「不愿意」为什么也要签名？</b>签名的作用是确认这个决定是本人作出的，不等于同意加班；' +
+    '系统同时在界面和打印件上向员工明确标注这一点。</div></div>' +
+
+    '<div class="card"><h2>工作地点：由员工自己选</h2>' +
+    '<p class="hint">表头不再印统一地点，改由每位员工签字时下拉选择自己所在的厂区</p>' +
+    '<table><tr><th style="width:150px">场景</th><th>做法</th></tr>' +
+    '<tr><td>德利公司</td><td>在「可选工作地点」填 <b>德利厂区</b>（可点预设按钮一键填入）</td></tr>' +
+    '<tr><td>汉莎公司</td><td>填 <b>汉莎厂区一</b>、<b>汉莎厂区二</b> 两项（也有预设按钮）</td></tr>' +
+    '<tr><td>员工填写时</td><td>下拉选择自己实际所在厂区，选完才能提交</td></tr>' +
+    '<tr><td>打印出来</td><td>每位员工签名旁单独印一行「工作地点」，后勤可按厂区分开安排</td></tr></table>' +
+    '<div class="notice info">手机若允许定位，会额外附一条 GPS 坐标作为佐证；' +
+    '<b>不允许也能正常提交</b>——系统不会等定位，避免卡住。</div></div>' +
+
+    '<div class="card"><h2>发到 GitHub Pages（免费 HTTPS，推荐）</h2>' +
+    '<p class="hint">员工不用装任何插件，扫码用手机自带浏览器打开就能填</p>' +
+    '<table><tr><th style="width:60px">步骤</th><th>怎么做</th></tr>' +
+    '<tr><td>①</td><td>把 <span class="mono">自愿加班协商书签署系统.html</span> 传到 GitHub 仓库，' +
+    '开启 <b>Pages</b>（Settings → Pages → 选分支根目录），得到 ' +
+    '<span class="mono">https://xxx.github.io/xxx/</span> 地址</td></tr>' +
+    '<tr><td>②</td><td>把 <span class="mono">cloudflare-worker.js</span> 部署到 Cloudflare Workers 并绑定 D1，' +
+    '得到 <span class="mono">https://xxx.workers.dev</span> —— 这是存放签名的地方</td></tr>' +
+    '<tr><td>③</td><td>HR 打开 Pages 地址 → 「发布」页最上方<b>数据回传设置</b> → ' +
+    '填入 <span class="mono">https://xxx.workers.dev/api</span> → 点「连接」</td></tr>' +
+    '<tr><td>④</td><td>扫码地址填 Pages 地址，生成二维码发给员工</td></tr></table>' +
+    '<div class="notice"><b>注意：</b>GitHub Pages 只放网页，<b>存不了数据</b>。' +
+    '必须配一个后端地址，员工签名才会回传到 HR 端。不配只能本机演示。</div>' +
+    '<div class="notice info">走 GitHub Pages 的好处是自带 <b>HTTPS</b>——' +
+    '手机浏览器只在 HTTPS 下才给定位权限，这样员工能拿到真实 GPS 佐证。</div></div>' +
+
+    '<div class="card"><h2>车间没有 WiFi，员工怎么填？</h2>' +
+    '<p class="hint">员工手机能连外网即可，不需要车间 WiFi</p>' +
+    '<div class="notice"><b>先说清一件事：</b>纯单机网页是收不到员工签名的——' +
+    '员工在自己手机上打开页面，数据只会存在他自己的手机里，HR 看不到。' +
+    '要跨设备收数据，<b>必须有一台员工手机能访问到的服务器</b>。本系统已内置配套后端。</div>' +
+    '<table><tr><th style="width:150px">怎么做</th><th>说明</th></tr>' +
+    '<tr><td>① 放上服务器</td><td>把 <span class="mono">自愿加班协商书签署系统.html</span> 和 ' +
+    '<span class="mono">server.py</span> 放在同一目录，执行 ' +
+    '<span class="mono">python3 server.py 8080</span>（Python 自带，不用装任何东西）</td></tr>' +
+    '<tr><td>② 让员工能访问</td><td>该服务器需要有<b>公网地址</b>（云服务器 / 公司对外服务器）。' +
+    '员工用手机流量或任何网络打开 <span class="mono">http://服务器地址:8080/</span> 即可，' +
+    '<b>车间有没有 WiFi 都无所谓</b></td></tr>' +
+    '<tr><td>③ HR 打开同一地址</td><td>HR 浏览器打开后，右上角会显示「<b>已连接服务器</b>」；' +
+    '此时建单、导入名单都会自动同步到服务器</td></tr>' +
+    '<tr><td>④ 员工扫码填写</td><td>二维码地址填公网地址，员工扫开后输入工号即可；' +
+    '签名直接写入服务器，HR 看板每隔几秒自动跟进</td></tr></table>' +
+    '<div class="notice info">右上角显示「本地演示模式」时，说明没连上服务器，' +
+    '此时只能在本机演示（HR 端和员工端在同一台电脑上点）。要真机收签名，必须按上面部署。</div></div>' +
+
+    '<div class="card"><h2>两家公司：分开建单，不用合并</h2>' +
+    '<p class="hint">德利一张单、汉莎一张单，各自发布、各自打印</p>' +
+    '<table><tr><th style="width:150px">做法</th><th>说明</th></tr>' +
+    '<tr><td>分别建单</td><td>HR 把两公司名单分开导出，在程序里<b>建两张单</b>，各自导入、各自生成二维码</td></tr>' +
+    '<tr><td>厂区不用填</td><td>导入名单时<b>不需要</b>填厂区——工作地点由员工签字时下拉选择，' +
+    '打印与统计都按他<b>实际选的地点</b>走</td></tr>' +
+    '<tr><td>结果</td><td>两家公司各自一份完整 A4 协商书，互不影响，也不需要合并</td></tr></table></div>' +
+
+    '<div class="card"><h2>各部门谁可以看结果（HR 在后台设定）</h2>' +
+    '<p class="hint">由 HR 指定工号 → 部门；这些人用自己的工号进入，只看得到本部门</p>' +
+    '<table><tr><th style="width:60px">步骤</th><th>怎么做</th></tr>' +
+    '<tr><td>①</td><td>看板 →「设定谁能看各部门结果」→ 选部门 → 填入工号（多个用逗号或换行分隔，可整列粘贴）</td></tr>' +
+    '<tr><td>②</td><td>点「生成部门查询二维码」，把二维码发给这些人</td></tr>' +
+    '<tr><td>③</td><td>他们扫码 → <b>输入自己的工号</b> → 只显示本部门的统计与名单（只读）</td></tr></table>' +
+    '<div class="notice info">没被授权的工号输进去会被拒绝。' +
+    '查看人不能修改、不能撤销、看不到其他部门。</div></div>' +
+
+    '<div class="card"><h2>万人规模的使用建议</h2>' +
+    '<table><tr><th style="width:150px">事项</th><th>做法</th></tr>' +
+    '<tr><td>名单表格</td><td>看板名单自动分页（每页 200 条），支持按工号 / 姓名 / 部门 / 班组搜索</td></tr>' +
+    '<tr><td>统计</td><td>看板上方「按部门统计」「按厂区统计」直接给出各组人数与完成率</td></tr>' +
+    '<tr><td>打印</td><td>点「导出 A4 打印」会先让选范围：<b>建议按部门分批打印</b>，' +
+    '避免一次渲染几百页导致浏览器卡死</td></tr>' +
+    '<tr><td>催办</td><td>「复制未响应工号」一键复制，发给各车间主管</td></tr></table></div>' +
+
+    '<div class="card"><h2>验厂（Audit）关注点与本系统的对应</h2>' +
+    '<table><tr><th style="width:200px">验厂关注</th><th>本系统如何佐证</th></tr>' +
+    '<tr><td>加班是否自愿</td><td>每名员工独立勾选「本人自愿」，签名下方打印 ✓ 自愿标记</td></tr>' +
+    '<tr><td>签名是否本人、是否事后补签</td><td>每条签名记录<b>精确到分钟的时间戳</b>与<b>GPS 坐标</b>，事后不可修改</td></tr>' +
+    '<tr><td>是否全员覆盖</td><td>未签名员工同样列印在表内，签名栏留空，无法隐瞒</td></tr>' +
+    '<tr><td>单据可否伪造</td><td>每条签名生成 6 位防伪码（工号+时间+坐标哈希），打印在签名下方</td></tr>' +
+    '<tr><td>加班费是否依法</td><td>加班费倍率由 HR 填写并全文打印，150% / 300% 分时段列明</td></tr>' +
+    '<tr><td>打印格式</td><td>A4 纵向，页眉含公司名与国号标语，跨页自动续表并标注「第 X 页 / 共 Y 页」</td></tr></table></div>';
+}
+
+/* ================= HR 端 ================= */
+function renderHR() {
+  var b = document.getElementById('body');
+  if (S.view === 'list') return renderList();
+  var d = getDoc(S.docId);
+  if (!d) { S.view = 'list'; return renderList(); }
+  var steps = [['edit', '1 填写协商内容'], ['emp', '2 导入员工名单'], ['pub', '3 发布二维码'], ['board', '4 进度与打印']];
+  var html = '<div class="steps">';
+  steps.forEach(function (s) {
+    html += '<div class="step' + (S.view === s[0] ? ' on' : '') + '" data-g="' + s[0] + '"><span class="n">' + s[1][0] + '</span>' + s[1].slice(2) + '</div>';
+  });
+  html += '</div><div id="pane"></div>';
+  b.innerHTML = html;
+  Array.prototype.forEach.call(b.querySelectorAll('.step'), function (el) {
+    el.onclick = function () { S.view = el.getAttribute('data-g'); renderHR(); };
+  });
+  var pane = document.getElementById('pane');
+  if (S.view === 'edit') pane.innerHTML = viewEdit(d), bindEdit(d);
+  else if (S.view === 'emp') pane.innerHTML = viewEmp(d), bindEmp(d);
+  else if (S.view === 'pub') pane.innerHTML = viewPub(d), bindPub(d);
+  else pane.innerHTML = viewBoard(d), bindBoard(d);
+}
+
+function renderList() {
+  var b = document.getElementById('body');
+  var h = '<div class="card"><h2>协商书列表</h2><p class="hint">每张单据 = 一份可独立发布、独立打印的自愿加班协商书</p>' +
+    '<div class="bar"><button id="new">+ 新建协商书</button>' +
+    '<button class="sec" id="demo">载入范本示例（德利 9/1-9/2 国庆加班）</button>' +
+    '<span class="sp"></span></div>';
+  if (!DB.docs.length) {
+    h += '<div class="empty" style="margin-top:14px">还没有单据。点「新建协商书」或先「载入范本示例」快速体验。</div>';
+  } else {
+    h += '<div class="tbl-wrap" style="margin-top:14px"><table><thead><tr><th>单据编号</th><th>文档 ID</th><th>文书日期</th><th>员工</th><th>已签</th><th>创建时间</th><th style="width:210px">操作</th></tr></thead><tbody>';
+    DB.docs.forEach(function (d) {
+      var sg = 0, sdec = 0;
+      d.employees.forEach(function (e) {
+        if (!e.sign) return;
+        if (choiceOf(e.sign) === 'decline') sdec++; else sg++;
+      });
+      h += '<tr><td><b>' + esc(d.docNo) + '</b></td><td class="mono">' + esc(d.id) + '</td><td>' + esc(d.dd + '/' + d.dm + '/' + d.dy) +
+        '</td><td>' + d.employees.length + '</td><td><span class="pill ' + (sg === d.employees.length ? 'ok' : 'wait') + '">同意 ' + sg + '</span>' +
+        (sdec ? ' <span class="pill no">不同意 ' + sdec + '</span>' : '') +
+        ' <span class="mini">/ ' + d.employees.length + '</span></td>' +
+        '<td class="mini">' + esc(nowStr(new Date(d.createdAt))) + '</td><td>' +
+        '<button class="sec" data-open="' + d.id + '">打开</button> ' +
+        '<button class="ghost" data-print="' + d.id + '">打印</button> ' +
+        '<button class="danger" data-del="' + d.id + '">删除</button></td></tr>';
+    });
+    h += '</tbody></table></div>';
+  }
+  h += '</div>';
+  b.innerHTML = h;
+  document.getElementById('new').onclick = function () {
+    var d = blankDoc(); DB.docs.unshift(d); save(); S.docId = d.id; S.view = 'edit'; renderHR();
+  };
+  document.getElementById('demo').onclick = function () {
+    var d = demoDoc(); DB.docs.unshift(d); save(); S.docId = d.id; S.view = 'edit'; renderHR();
+  };
+  Array.prototype.forEach.call(b.querySelectorAll('[data-open]'), function (el) {
+    el.onclick = function () { S.docId = el.getAttribute('data-open'); S.view = 'emp'; renderHR(); };
+  });
+  Array.prototype.forEach.call(b.querySelectorAll('[data-print]'), function (el) {
+    el.onclick = function () { var d = getDoc(el.getAttribute('data-print')); if (d) doPrint(d); };
+  });
+  Array.prototype.forEach.call(b.querySelectorAll('[data-del]'), function (el) {
+    el.onclick = function () {
+      var id = el.getAttribute('data-del');
+      askBox('删除协商书', '<p>将删除该协商书，所有签名记录一并删除，<b>不可恢复</b>。</p>', '确定删除', true, function (ok) {
+        if (!ok) return;
+        DB.docs = DB.docs.filter(function (x) { return x.id !== id; });
+        save(); renderList();
+      });
+    };
+  });
+}
+
+function blankDoc() {
+  var t = new Date();
+  var d = demoDoc();
+  d.id = uid(); d.docNo = ''; d.shifts = [d.shifts[0]]; d.employees = [];
+  d.dy = String(t.getFullYear()); d.dm = String(t.getMonth() + 1).padStart(2, '0'); d.dd = String(t.getDate()).padStart(2, '0');
+  return d;
+}
+
+/* --- 步骤1：协商内容 --- */
+function viewEdit(d) {
+  var sh = '';
+  d.shifts.forEach(function (s, i) {
+    sh += '<div class="card" style="background:#fafcfd;margin-bottom:10px" data-sh="' + i + '">' +
+      '<div class="bar"><b style="font-size:13px">时间段 ' + (i + 1) + '</b><span class="sp"></span>' +
+      '<button class="danger" data-rmsh="' + i + '">删除</button></div>' +
+      '<div class="grid g2" style="margin-top:10px">' +
+      '<div><label>越南语内容（含时间、倍率）</label><textarea rows="3" data-f="shVi" data-i="' + i + '">' + esc(s.vi) + '</textarea></div>' +
+      '<div><label>中文内容（含时间、倍率）</label><textarea rows="3" data-f="shCn" data-i="' + i + '">' + esc(s.cn) + '</textarea></div>' +
+      '</div></div>';
+  });
+  return '<div class="card"><h2>1. 协商书正文</h2><p class="hint">越南语与中文对照填写，打印时双语并列，验厂可直接核对加班费倍率</p>' +
+    '<div class="grid g2">' +
+    '<div><label>公司名称（越南语）</label><input data-f="companyVi" value="' + esc(d.companyVi) + '"></div>' +
+    '<div><label>公司名称（中文）</label><input data-f="companyCn" value="' + esc(d.companyCn) + '"></div>' +
+    '<div><label>单据编号（自定义，打印在页脚）</label><input data-f="docNo" value="' + esc(d.docNo) + '"></div>' +
+    '<div class="grid g3" style="grid-template-columns:1fr 1fr 1fr"><div><label>文书日期</label>' +
+    '<input data-f="dd" value="' + esc(d.dd) + '" placeholder="日"></div>' +
+    '<div><label>&nbsp;</label><input data-f="dm" value="' + esc(d.dm) + '" placeholder="月"></div>' +
+    '<div><label>&nbsp;</label><input data-f="dy" value="' + esc(d.dy) + '" placeholder="年"></div></div>' +
+    '</div>' +
+    '<div style="margin-top:14px"><label>放假时间说明（越南语）</label><textarea rows="2" data-f="holidayVi">' + esc(d.holidayVi) + '</textarea></div>' +
+    '<div style="margin-top:10px"><label>放假时间说明（中文）</label><textarea rows="2" data-f="holidayCn">' + esc(d.holidayCn) + '</textarea></div>' +
+    '<div style="margin-top:10px"><label>加班原因 + 加班费计算依据（越南语）</label><textarea rows="3" data-f="reasonVi">' + esc(d.reasonVi) + '</textarea></div>' +
+    '<div style="margin-top:10px"><label>加班原因 + 加班费计算依据（中文）</label><textarea rows="2" data-f="reasonCn">' + esc(d.reasonCn) + '</textarea></div>' +
+    '</div>' +
+    '<div class="card"><h2>可选工作地点（员工签字时下拉选择）</h2>' +
+    '<p class="hint">表头不再印统一地点，改由每位员工自己选所在厂区；所选地点印在该员工签名旁</p>' +
+    '<div class="bar" style="margin-bottom:10px">' +
+    '<button class="sec" data-preset="德利厂区 / Nhà máy Gain Lucky">德利：德利厂区</button>' +
+    '<button class="sec" data-preset="汉莎厂区一 / Nhà máy Hán Sa 1|汉莎厂区二 / Nhà máy Hán Sa 2">汉莎：厂区一 + 厂区二</button>' +
+    '<span class="sp"></span></div>' +
+    '<div id="wpList">' + wpRows(d) + '</div>' +
+    '<div class="bar" style="margin-top:8px"><button class="sec" id="addwp">+ 添加地点</button>' +
+    '<span class="mini">每行一个地点，员工只能从中选择</span></div>' +
+    '<div class="notice info" style="margin-top:10px">德利公司一般只填「德利厂区」；' +
+    '汉莎公司填「汉莎厂区一」「汉莎厂区二」两个，员工按自己实际所在厂区选择。</div></div>' +
+    '<div class="card"><h2>加班时间段与加班费</h2><p class="hint">每一段单独一条，验厂时逐条可查；可继续添加</p>' +
+    sh + '<button class="sec" id="addsh">+ 添加时间段</button></div>' +
+    '<div class="card"><div class="bar"><label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink)">' +
+    '<input type="checkbox" data-f="showRepSign" ' + (d.showRepSign ? 'checked' : '') + ' style="width:16px;height:16px">打印末页附「公司代表 / 工会代表」签字栏</label>' +
+    '<span class="sp"></span><button id="sv">保存并下一步 →</button></div></div>';
+}
+function wpRows(d) {
+  var list = (d.workPlaces && d.workPlaces.length) ? d.workPlaces : [''];
+  var h = '';
+  list.forEach(function (v, i) {
+    h += '<div class="bar" style="margin-bottom:6px"><input data-wp="' + i + '" value="' + esc(v) +
+      '" placeholder="例如：汉莎厂区一 / Nhà máy Hán Sa 1">' +
+      '<button class="danger" data-rmwp="' + i + '">删</button></div>';
+  });
+  return h;
+}
+function bindWp(d, p) {
+  Array.prototype.forEach.call(p.querySelectorAll('[data-wp]'), function (el) {
+    el.addEventListener('input', function () {
+      d.workPlaces = d.workPlaces || [];
+      d.workPlaces[+el.getAttribute('data-wp')] = el.value;
+      save(); scheduleSync(d);
+    });
+  });
+  Array.prototype.forEach.call(p.querySelectorAll('[data-rmwp]'), function (el) {
+    el.onclick = function () {
+      d.workPlaces.splice(+el.getAttribute('data-rmwp'), 1);
+      save(); scheduleSync(d); renderHR();
+    };
+  });
+  Array.prototype.forEach.call(p.querySelectorAll('[data-preset]'), function (el) {
+    el.onclick = function () {
+      var v = el.getAttribute('data-preset');
+      d.workPlaces = v.split('|');
+      save(); scheduleSync(d); renderHR();
+    };
+  });
+  var aw = p.querySelector('#addwp');
+  if (aw) aw.onclick = function () {
+    d.workPlaces = d.workPlaces || [];
+    d.workPlaces.push('');
+    save(); scheduleSync(d); renderHR();
+  };
+}
+function bindEdit(d) {
+  var p = document.getElementById('pane');
+  bindWp(d, p);
+  Array.prototype.forEach.call(p.querySelectorAll('[data-f]'), function (el) {
+    var f = el.getAttribute('data-f');
+    var ev = (el.type === 'checkbox') ? 'change' : 'input';
+    el.addEventListener(ev, function () {
+      var v = el.type === 'checkbox' ? el.checked : el.value;
+      if (f === 'shVi') d.shifts[+el.getAttribute('data-i')].vi = v;
+      else if (f === 'shCn') d.shifts[+el.getAttribute('data-i')].cn = v;
+      else d[f] = v;
+      save(); scheduleSync(d);
+    });
+  });
+  Array.prototype.forEach.call(p.querySelectorAll('[data-rmsh]'), function (el) {
+    el.onclick = function () {
+      d.shifts.splice(+el.getAttribute('data-rmsh'), 1); save(); scheduleSync(d); renderHR();
+    };
+  });
+  p.querySelector('#addsh').onclick = function () { d.shifts.push({ vi: '', cn: '' }); save(); scheduleSync(d); renderHR(); };
+  p.querySelector('#sv').onclick = function () { save(); S.view = 'emp'; renderHR(); };
+}
+
+/* --- 步骤2：员工名单 --- */
+var TMP = null;
+var MODAL_CB = null;
+function closeModal() {
+  var m = document.getElementById('modal');
+  if (m) m.parentNode.removeChild(m);
+  MODAL_CB = null;
+}
+/* 页内确认框：cb(true)=确定 cb(false)=取消 */
+function askBox(title, body, okText, danger, cb) {
+  closeModal();
+  MODAL_CB = cb;
+  var wrap = document.createElement('div');
+  wrap.id = 'modal';
+  wrap.className = 'modal-mask';
+  wrap.innerHTML = '<div class="modal-box"><h3>' + esc(title) + '</h3>' +
+    '<div class="modal-body">' + body + '</div>' +
+    '<div class="bar" style="justify-content:flex-end;margin-top:14px">' +
+    '<button class="ghost" id="mbNo">取消</button>' +
+    '<button id="mbYes" class="' + (danger ? 'danger' : '') + '" style="min-width:110px">' + esc(okText) + '</button></div></div>';
+  document.body.appendChild(wrap);
+  document.getElementById('mbYes').onclick = function () { var f = MODAL_CB; closeModal(); if (f) f(true); };
+  document.getElementById('mbNo').onclick = function () { var f = MODAL_CB; closeModal(); if (f) f(false); };
+  wrap.onclick = function (e) { if (e.target === wrap) { var f = MODAL_CB; closeModal(); if (f) f(false); } };
+  var y = document.getElementById('mbYes'); if (y) y.focus();
+}
+function infoBox(title, body) {
+  closeModal();
+  var wrap = document.createElement('div');
+  wrap.id = 'modal';
+  wrap.className = 'modal-mask';
+  wrap.innerHTML = '<div class="modal-box"><h3>' + esc(title) + '</h3>' +
+    '<div class="modal-body">' + body + '</div>' +
+    '<div class="bar" style="justify-content:flex-end;margin-top:14px">' +
+    '<button id="mbOk">知道了</button></div></div>';
+  document.body.appendChild(wrap);
+  document.getElementById('mbOk').onclick = closeModal;
+  wrap.onclick = function (e) { if (e.target === wrap) closeModal(); };
+}
+
+function viewEmp(d) {
+  var rows = '';
+  d.employees.forEach(function (e, i) {
+    rows += '<tr>' +
+      '<td style="width:44px;text-align:center">' + (i + 1) + '</td>' +
+      '<td><input data-e="empNo" data-i="' + i + '" value="' + esc(e.empNo) + '"></td>' +
+      '<td><input data-e="nameVi" data-i="' + i + '" value="' + esc(e.nameVi) + '"></td>' +
+      '<td><input data-e="nameCn" data-i="' + i + '" value="' + esc(e.nameCn) + '"></td>' +
+      '<td><input data-e="dept" data-i="' + i + '" value="' + esc(e.dept) + '"></td>' +
+      '<td style="width:80px"><input data-e="shift" data-i="' + i + '" value="' + esc(e.shift) + '"></td>' +
+      '<td style="width:56px;text-align:center"><button class="danger" data-rme="' + i + '">删</button></td></tr>';
+  });
+  return '<div class="card"><h2>2. 员工名单</h2>' +
+    '<p class="hint">粘贴 Excel 内容或上传文件 → 先<b>解析预览</b>，核对列对应关系无误后再导入</p>' +
+    '<div class="grid g2" style="margin-bottom:12px">' +
+    '<div><label>方式 A：粘贴 Excel（推荐）</label><textarea id="paste" rows="5" placeholder="在 Excel 里框选名单（含表头）复制，粘贴到这里">' + esc(S.paste || '') + '</textarea>' +
+    '<button class="sec" id="doPaste" style="margin-top:8px">解析粘贴内容</button></div>' +
+    '<div><label>方式 B：上传文件（.csv / .xlsx）</label>' +
+    '<input type="file" id="file" accept=".csv,.txt,.xlsx,.xls">' +
+    '<div class="mini" style="margin-top:8px">CSV 本机解析；XLSX 首次使用会联网加载解析组件，之后浏览器会缓存。</div>' +
+    '<button class="ghost" id="tpl" style="margin-top:8px">下载名单模板 CSV</button></div></div>' +
+    '<div id="prevBox">' + previewHtml() + '</div>' +
+    '<div id="msg"></div>' +
+    '<div class="tbl-wrap"><table><thead><tr><th>STT</th><th>工号 Số thẻ</th><th>姓名 Họ tên (VN)</th><th>姓名 (CN)</th><th>部门 Bộ phận</th><th>班组 Ca</th><th></th></tr></thead><tbody>' +
+    (rows || '<tr><td colspan="7" class="empty">名单为空，请用上方任一方式导入</td></tr>') +
+    '</tbody></table></div>' +
+    '<div class="bar" style="margin-top:12px"><button class="sec" id="addrow">+ 手动添加一行</button>' +
+    (d._lastImport ? '<button class="danger" id="undo">↩ 撤销上次导入（' + d._lastImport + ' 人）</button>' : '') +
+    '<button class="danger" id="clr">✕ 一键清空名单（重新导入）</button><span class="sp"></span>' +
+    '<button class="ghost" id="back">← 上一步</button><button id="next">保存并下一步 →</button></div>' +
+    '<div class="notice info" style="margin-top:10px">导入结果可直接在表格里改；导入错了先点「撤销上次导入」，' +
+    '想从头再来就点「一键清空名单」再重新导入。</div></div>';
+}
+/* 解析预览：把"识别成什么"摊开给用户看，可逐列改正 */
+function previewHtml() {
+  var p = S.prev;
+  if (!p) return '';
+  var cols = '';
+  for (var i = 0; i < p.nCols; i++) {
+    var head = p.header && p.header[i] ? p.header[i] : ('第' + (i + 1) + '列');
+    cols += '<div class="colmap"><div class="cm-h">' + esc(String(head).slice(0, 18)) + '</div>' +
+      '<select data-col="' + i + '">' + roleOptions(p.roles[i]) + '</select></div>';
+  }
+  var sample = '';
+  (p.sample || []).forEach(function (r) {
+    sample += '<tr>' + r.map(function (c) { return '<td>' + esc(String(c).slice(0, 22)) + '</td>'; }).join('') + '</tr>';
+  });
+  var warn = '';
+  if (!p.list.length) warn = '<div class="notice">没有解析出数据行。请检查上方列对应关系，尤其确认哪一列是<b>工号</b>。</div>';
+  else if (p.roles.indexOf('empNo') < 0) warn = '<div class="notice">未识别出工号列，请在上方把工号那一列选为「工号」。</div>';
+  return '<div class="card" style="background:#f7fbf8;border:1px solid #cfe3d6"><h2>解析预览</h2>' +
+    '<p class="hint">共 <b>' + p.list.length + '</b> 行' +
+    (p.skipped ? '（跳过 ' + p.skipped + ' 行无工号内容）' : '') +
+    '。请核对每一列识别得对不对，不对就在下面改，改完点「确认导入」。</p>' +
+    '<div class="cols-wrap">' + cols + '</div>' + warn +
+    (sample ? '<div class="tbl-wrap" style="margin-top:10px"><table class="mini-tb"><thead><tr>' +
+      p.sample[0].map(function (_, i) { return '<th>' + (i + 1) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      sample + '</tbody></table></div>' : '') +
+    (p.list.length ? '<div class="notice info" style="margin-top:8px">解析结果对照（前 3 人）：<br>' +
+      p.list.slice(0, 3).map(function (r) {
+        return '<span class="mono">' + esc(r.empNo) + '</span> · 越文名 <b>' + esc(r.nameVi || '（空）') +
+          '</b> · 中文名 <b>' + esc(r.nameCn || '（空）') + '</b> · ' + esc(r.dept || '（空）') +
+          ' · ' + esc(r.shift || '（空）');
+      }).join('<br>') + '</div>' : '') +
+    '<div class="bar" style="margin-top:12px">' +
+    '<button id="okImp"' + (p.list.length ? '' : ' disabled') + '>确认导入 ' + p.list.length + ' 人</button>' +
+    '<button class="ghost" id="cancelPrev">取消</button><span class="sp"></span></div></div>';
+}
+function roleOptions(cur) {
+  var opts = [['empNo', '工号 Số thẻ'], ['nameVi', '姓名(越) Họ tên'], ['nameCn', '姓名(中) Tên CN'],
+    ['dept', '部门 Bộ phận'], ['shift', '班组 Ca'], ['factory', '厂区 Nhà máy'], ['stt', '序号 STT'], ['-', '忽略']];
+  var h = '<option value="-"' + (!cur || cur === '-' ? ' selected' : '') + '>忽略</option>';
+  opts.forEach(function (o) {
+    if (o[0] === '-') return;
+    h += '<option value="' + o[0] + '"' + (cur === o[0] ? ' selected' : '') + '>' + o[1] + '</option>';
+  });
+  return h;
+}
+function bindEmp(d) {
+  var p = document.getElementById('pane');
+  Array.prototype.forEach.call(p.querySelectorAll('[data-e]'), function (el) {
+    el.addEventListener('input', function () {
+      d.employees[+el.getAttribute('data-i')][el.getAttribute('data-e')] = el.value;
+      save(); scheduleSync(d);
+    });
+  });
+  Array.prototype.forEach.call(p.querySelectorAll('[data-rme]'), function (el) {
+    el.onclick = function () {
+      d.employees.splice(+el.getAttribute('data-rme'), 1);
+      save(); scheduleSync(d); renderHR();
+    };
+  });
+  p.querySelector('#addrow').onclick = function () {
+    d.employees.push({ empNo: '', nameVi: '', nameCn: '', dept: '', shift: '', factory: '', sign: null });
+    save(); scheduleSync(d); renderHR();
+  };
+  var undo = p.querySelector('#undo');
+  if (undo) undo.onclick = function () {
+    var nos = d._lastImportNos || [];
+    var k = nos.length || d._lastImport || 0;
+    if (!k) { msg('没有可撤销的导入记录。', true); return; }
+    var signed = 0;
+    nos.forEach(function (no) {
+      var e = d.employees.filter(function (x) { return String(x.empNo).trim() === String(no).trim(); })[0];
+      if (e && e.sign) signed++;
+    });
+    askBox('撤销上次导入', '<p>将移除上次导入的 <b>' + k + '</b> 人，其余人员不受影响。</p>' +
+      (signed ? '<div class="notice">其中 <b>' + signed + '</b> 人已经签字，撤销会一并删除其签名。</div>' : ''),
+      '确定撤销', true, function (ok) {
+        if (!ok) return;
+        if (nos.length) {
+          var set = {};
+          nos.forEach(function (n) { set[String(n).trim()] = 1; });
+          d.employees = d.employees.filter(function (e) { return !set[String(e.empNo).trim()]; });
+        } else {
+          d.employees.splice(d.employees.length - k, k);
+        }
+        d._lastImport = 0; d._lastImportNos = [];
+        save(); scheduleSync(d); renderHR();
+        msg('已撤销上次导入的 ' + k + ' 人，当前共 ' + d.employees.length + ' 人。', false);
+      });
+  };
+  p.querySelector('#clr').onclick = function () {
+    var sg = d.employees.filter(function (e) { return e.sign; }).length;
+    askBox('一键清空名单', '<p>将清空全部 <b>' + d.employees.length + '</b> 人' +
+      (sg ? '，其中 <b>' + sg + '</b> 人已签字，签名会一并删除' : '') + '。</p>' +
+      '<div class="notice info">只是导错了，用「撤销上次导入」更合适。</div>',
+      '确定清空', true, function (ok) {
+        if (!ok) return;
+        d.employees = []; d._lastImport = 0; d._lastImportNos = []; S.prev = null;
+        save(); scheduleSync(d); renderHR();
+        msg('已清空名单，请重新导入。', false);
+      });
+  };
+  p.querySelector('#back').onclick = function () { S.view = 'edit'; renderHR(); };
+  p.querySelector('#next').onclick = function () {
+    var bad = d.employees.filter(function (e) { return !e.empNo; }).length;
+    if (bad) { msg('有 ' + bad + ' 行缺工号，员工将无法登录签字。', true); return; }
+    if (!d.employees.length) { msg('名单还是空的，请先导入。', true); return; }
+    save(); S.view = 'pub'; renderHR();
+  };
+  p.querySelector('#tpl').onclick = function () {
+    download('名单模板.csv', '\ufeff工号,姓名(越南语),姓名(中文),部门,班组\n14027464,TRỊNH THỊ SƠN LOAN/郑氏山鸾,化验室,B\n');
+  };
+
+  /* ---- 解析 → 预览 ---- */
+  var pasteEl = p.querySelector('#paste');
+  if (pasteEl) pasteEl.addEventListener('input', function () { S.paste = this.value; });
+
+  function doParse(txt) {
+    if (!txt || !txt.trim()) { msg('请先粘贴内容或选择文件', true); return; }
+    S.prevSrc = txt;
+    var map = readColMap(p);
+    S.prev = parseTable(txt, map);
+    renderHR();
+    // 重绘后把粘贴内容填回去
+    var pv = document.getElementById('paste');
+    if (pv) pv.value = S.paste || '';
+    if (!S.prev.list.length) {
+      msg('解析出 0 行。已把识别结果摊在上方预览区，请把工号那一列选为「工号」后重新解析。', true);
+    }
+  }
+  p.querySelector('#doPaste').onclick = function () {
+    S.paste = (p.querySelector('#paste').value || '');
+    doParse(S.paste);
+  };
+  p.querySelector('#file').onchange = function (e) {
+    var f = e.target.files[0]; if (!f) return;
+    if (/\.(csv|txt)$/i.test(f.name)) {
+      var r = new FileReader();
+      r.onload = function () { S.paste = String(r.result); doParse(S.paste); };
+      r.readAsText(f, 'UTF-8');
+    } else {
+      msg('正在加载 XLSX 解析组件…', false);
+      loadXLSX(function (err) {
+        if (err) { msg('XLSX 解析组件加载失败（可能无外网）。请把 Excel 另存为 CSV 后再上传，或改用「粘贴」。', true); return; }
+        var r2 = new FileReader();
+        r2.onload = function (ev) {
+          try {
+            var wb = XLSX.read(new Uint8Array(ev.target.result), { type: 'array' });
+            var ws = wb.Sheets[wb.SheetNames[0]];
+            var arr = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '', raw: false });
+            S.paste = arr.map(function (row) { return row.join('\t'); }).join('\n');
+            doParse(S.paste);
+          } catch (ex) { msg('解析失败：' + ex.message, true); }
+        };
+        r2.readAsArrayBuffer(f);
+      });
+    }
+  };
+  /* ---- 预览区交互 ---- */
+  Array.prototype.forEach.call(p.querySelectorAll('[data-col]'), function (el) {
+    el.addEventListener('change', function () {
+      var map = readColMap(p);
+      if (S.prevSrc) S.prev = parseTable(S.prevSrc, map);
+      renderHR();
+      var pv2 = document.getElementById('paste');
+      if (pv2) pv2.value = S.paste || '';
+    });
+  });
+  var okb = p.querySelector('#okImp');
+  if (okb) okb.onclick = function () {
+    if (!S.prev || !S.prev.list.length) return;
+    applyList(d, S.prev.list);
+  };
+  var cb = p.querySelector('#cancelPrev');
+  if (cb) cb.onclick = function () { S.prev = null; S.prevSrc = ''; renderHR(); };
+
+  function msg(t, bad) {
+    var m = document.getElementById('msg');
+    if (m) m.innerHTML = '<div class="notice' + (bad ? '' : ' info') + '">' + esc(t) + '</div>';
+  }
+}
+function readColMap(p) {
+  var m = [];
+  Array.prototype.forEach.call(p.querySelectorAll('[data-col]'), function (el) {
+    m[+el.getAttribute('data-col')] = el.value;
+  });
+  return m;
+}
+function applyList(d, list) {
+  if (!list || !list.length) { msg('没有可导入的行。', true); return; }
+  list.forEach(function (r) { d.employees.push(r); });
+  d._lastImport = list.length;
+  d._lastImportNos = list.map(function (r) { return String(r.empNo).trim(); });
+  var n = list.length;
+  S.prev = null; S.prevSrc = ''; S.paste = '';      // 导入成功后清空，避免重复导入
+  save(); scheduleSync(d); renderHR();
+  var m = document.getElementById('msg');
+  if (m) m.innerHTML = '<div class="notice info">已导入 ' + n + ' 人，当前共 ' + d.employees.length + ' 人。' +
+    '请核对下表（单元格可直接修改）；导错了可点下方「撤销上次导入」。</div>';
+}
+/* ============ 列角色识别：优先看表头文字，不再靠猜 ============ */
+var ROLE_LABEL = { empNo:'工号 Số thẻ', nameVi:'姓名 Họ tên', dept:'部门 Bộ phận',
+  shift:'班组 Ca', factory:'厂区 Nhà máy', stt:'序号 STT', '-':'忽略' };
+
+function normCell(v) {
+  return String(v == null ? '' : v).replace(/\s+/g, ' ').trim().toLowerCase();
+}
+/* 用表头单元格的文字判断这一列是什么 */
+function matchRole(t) {
+  var s = normCell(t);
+  if (!s) return '';
+  if (/(^|[^a-z])stt\.?([^a-z]|$)/.test(s) || /序号|số tt|so tt|số thứ tự|^no\.?$/.test(s)) return 'stt';
+  if (/số thẻ|so the|工号|mã nhân viên|ma nhan vien|mã nv|ma nv|employee|emp\s*no|card\s*no|staff\s*id|mã số/.test(s)) return 'empNo';
+  if (/ca làm|ca lam|班组|班次|ca sản xuất|ca sx|ca\s*sx|shift/.test(s)) return 'shift';
+  // 中文名：带明确中文标识的列
+  if (/tiếng trung|tieng trung|tên tq|ten tq|tên cn|ten cn|中文|chinese|\(cn\)|\(zh\)|\[cn\]|\[zh\]|姓名\s*\((cn|zh|中)\)|họ tên\s*\((cn|zh|中)\)/.test(s)) return 'nameCn';
+  if (/họ tên|ho ten|họ và tên|ho va ten|姓名|tên nhân viên|ten nhan vien|full\s*name|họ tên nhân viên/.test(s)) return 'nameVi';
+  // 越文名：带越南语标识的列
+  if (/越文|việt nam|tiếng việt|tieng viet|tên vn|ten vn|\(vn\)|\[vn\]|vietnamese|tên việt|ten viet/.test(s)) return 'nameVi';
+  if (/nhà máy|nha may|厂区|xí nghiệp|xi nghiep|factory|phân xưởng/.test(s)) return 'factory';
+  if (/bộ phận|bo phan|部门|phòng ban|phong ban|车间|xưởng|tổ|đơn vị|don vi|division/.test(s)) return 'dept';
+  if (/^ca$/.test(s)) return 'shift';
+  if (/^tên$|^ten$/.test(s)) return 'nameVi';
+  return '';
+}
+/* 把行切成规整网格：Excel 单元格内换行会把一行拆成多个碎片行，这里合并回去 */
+function toGrid(lines) {
+  var raw = lines.map(splitLine);
+  // 首个"像数据"的行（含 4 位以上数字，通常是工号）决定真正有多少列
+  var di = -1;
+  for (var k = 0; k < raw.length; k++) {
+    if (raw[k].some(function (v) { return /\d{4,}/.test(String(v)); })) { di = k; break; }
+  }
+  var base = di >= 0 ? raw[di].length : 0;
+  if (!base) {
+    raw.forEach(function (r) { if (r.length > base) base = r.length; });
+  }
+  if (base < 2) return { rows: raw, base: base, dataIdx: di };
+  // 只合并数据行之前的碎片行（双语表头被单元格内换行拆散时）
+  var out = [], buf = [];
+  for (var i = 0; i < raw.length; i++) {
+    if (di >= 0 && i >= di) { if (buf.length) { out.push(buf.slice(0, base)); buf = []; } out.push(raw[i]); continue; }
+    buf = buf.concat(raw[i]);
+    while (buf.length >= base) { out.push(buf.slice(0, base)); buf = buf.slice(base); }
+  }
+  if (buf.length) out.push(buf.slice(0, base));
+  // 重新定位数据行
+  var nd = -1;
+  for (var k2 = 0; k2 < out.length; k2++) {
+    if (out[k2].some(function (v) { return /\d{4,}/.test(String(v)); })) { nd = k2; break; }
+  }
+  return { rows: out, base: base, dataIdx: nd };
+}
+/* 找出表头行：命中已知列名的单元格 >= 2 个 */
+function detectHeader(rows) {
+  for (var i = 0; i < Math.min(rows.length, 6); i++) {
+    var roles = rows[i].map(matchRole);
+    var hit = roles.filter(function (x) { return x; }).length;
+    if (hit >= 2) return { idx: i, roles: roles };
+    if (hit === 1 && roles[0] === 'stt') return { idx: i, roles: roles };
+  }
+  return null;
+}
+/* 只在完全没有表头时才用：靠数据特征猜 */
+function guessColumns(rows) {
+  var n = 0, i, k;
+  rows.forEach(function (r) { if (r.length > n) n = r.length; });
+  var info = [];
+  for (i = 0; i < n; i++) {
+    var vals = [];
+    for (k = 0; k < rows.length; k++) {
+      var v = String(rows[k][i] == null ? '' : rows[k][i]).trim();
+      if (v) vals.push(v);
+    }
+    var tot = vals.length || 1, digits = 0, letters = 0, slash = 0, lenSum = 0, uniq = {}, allNum = true;
+    vals.forEach(function (v) {
+      if (/^\d{4,}$/.test(v)) digits++;
+      if (/^[A-Za-zÀ-ỹ\u4e00-\u9fff\s\/-]+$/.test(v)) letters++;
+      if (v.indexOf('/') >= 0) slash++;
+      if (!/^\d+$/.test(v)) allNum = false;
+      lenSum += v.length; uniq[v] = 1;
+    });
+    var isSeq = vals.length > 1;
+    for (k = 0; k < vals.length; k++) if (vals[k] !== String(k + 1)) { isSeq = false; break; }
+    info.push({ idx: i, digits: digits / tot, letters: letters / tot, slash: slash / tot,
+      avgLen: lenSum / tot, uniq: Object.keys(uniq).length, isSeq: isSeq, allNum: allNum });
+  }
+  var map = new Array(n).fill('-'), used = {};
+  // 序号列（值等于行号）直接忽略 —— 这正是此前把"1"当成班组的原因
+  info.forEach(function (c) { if (c.isSeq) used[c.idx] = 1; });
+  var best = -1, bs = -1;
+  info.forEach(function (c) {
+    if (used[c.idx]) return;
+    var sc = c.digits * 10 + Math.min(c.avgLen, 12);
+    if (c.digits >= 0.5 && sc > bs) { bs = sc; best = c.idx; }
+  });
+  if (best >= 0) { map[best] = 'empNo'; used[best] = 1; }
+  var bn2 = -1, bns = -1;
+  info.forEach(function (c) {
+    if (used[c.idx]) return;
+    var sc = c.slash * 10 + c.letters;
+    if (c.letters > 0.4 && sc > bns) { bns = sc; bn2 = c.idx; }
+  });
+  if (bn2 >= 0) { map[bn2] = 'nameVi'; used[bn2] = 1; }
+  var usable = function (c) {
+    if (used[c.idx]) return false;
+    if (c.digits >= 0.5) return false;        // 长数字列（工号）
+    if (c.isSeq) return false;                // 序号列 1,2,3…
+    if (c.allNum && c.avgLen <= 2) return false;
+    if (c.letters < 0.5) return false;        // 必须是文字列
+    return true;
+  };
+  // 班组 = 剩下的文字列里最短的那个（A / B / Ca 1）
+  var bg = -1, bgs = 1e9;
+  info.forEach(function (c) {
+    if (!usable(c)) return;
+    if (c.avgLen < bgs) { bgs = c.avgLen; bg = c.idx; }
+  });
+  if (bg >= 0) { map[bg] = 'shift'; used[bg] = 1; }
+  // 部门 = 剩下的文字列里最长的那个（缝制车间 > B）
+  var bd = -1, bds = -1;
+  info.forEach(function (c) {
+    if (!usable(c)) return;
+    if (c.avgLen > bds) { bds = c.avgLen; bd = c.idx; }
+  });
+  if (bd >= 0) { map[bd] = 'dept'; used[bd] = 1; }
+  return map;
+}
+/*
+ 解析名单文本。
+ 返回 { list, roles, header, nCols, sample, skipped, why }
+ - 有表头：用表头文字定列角色（用户手动指定优先）
+ - 无表头：退回按数据特征猜
+*/
+/* 校验"表头说的角色"和"实际数据"是否对得上；对不上就作废该列，改用数据特征判断 */
+function roleLooksRight(role, vals) {
+  var v = vals.filter(function (x) { return String(x).trim(); });
+  if (!v.length) return false;
+  var avg = v.reduce(function (a, b) { return a + String(b).length; }, 0) / v.length;
+  var num4 = v.filter(function (x) { return /\d{4,}/.test(String(x)); }).length / v.length;
+  var hasWord = v.filter(function (x) { return /[A-Za-zÀ-ỹ\u4e00-\u9fff]/.test(String(x)); }).length / v.length;
+  var slash = v.filter(function (x) { return String(x).indexOf('/') >= 0; }).length / v.length;
+  if (role === 'empNo') return num4 >= 0.5;
+  if (role === 'nameVi' || role === 'nameCn') return (avg >= 2 || slash >= 0.3) && hasWord >= 0.5;
+  if (role === 'dept') return hasWord >= 0.5 && num4 < 0.5;
+  if (role === 'shift') return avg <= 8 && num4 < 0.5;
+  if (role === 'factory') return hasWord >= 0.5 && num4 < 0.5;
+  return true;
+}
+function parseTable(txt, map) {
+  var lines = txt.split(/\r?\n/).filter(function (l) { return l.trim(); });
+  if (!lines.length) return { list: [], roles: [], header: [], nCols: 0, sample: [], skipped: 0, why: '内容为空' };
+  var g = toGrid(lines);
+  var rows = g.rows, n = g.base;
+  if (!n) return { list: [], roles: [], header: [], nCols: 0, sample: [], skipped: 0, why: '未能识别出列' };
+
+  var hdr = detectHeader(rows);
+  var header = [], roles = new Array(n).fill(''), start = 0;
+  // 表头只可能在数据行之前
+  if (hdr && g.dataIdx >= 0 && hdr.idx >= g.dataIdx) hdr = null;
+  if (hdr) {
+    header = rows[hdr.idx].slice(0);
+    for (var c = 0; c < n; c++) roles[c] = hdr.roles[c] || '';
+    start = hdr.idx + 1;
+    // 双语表头 / 换行拆散的表头：紧随其后的纯文字行也并进来补列名
+    for (var k = start; k < Math.min(rows.length, start + 3) && k <= g.dataIdx; k++) {
+      var rr = rows[k].map(matchRole);
+      var hit = rr.filter(function (x) { return x; }).length;
+      var allText = rows[k].every(function (v) { return !/\d{4,}/.test(String(v)); });
+      if (!hit || !allText) break;
+      for (var c2 = 0; c2 < n; c2++) if (!roles[c2] && rr[c2]) roles[c2] = rr[c2];
+      header = header.map(function (v, i2) { return v || rows[k][i2] || ''; });
+      start = k + 1;
+    }
+  } else {
+    var guess = guessColumns(rows);
+    for (var c3 = 0; c3 < n; c3++) roles[c3] = guess[c3] || '';
+  }
+  // 用实际数据校验表头判定的列角色：对不上就作废（双语换行表头常出现错位）
+  var dataRows0 = rows.slice(start);
+  var gGuess = guessColumns(dataRows0.length ? dataRows0 : rows);
+  for (var c4 = 0; c4 < n; c4++) {
+    if (!roles[c4]) continue;
+    var vals = dataRows0.map(function (r) { return r[c4]; });
+    if (!roleLooksRight(roles[c4], vals)) roles[c4] = '';
+  }
+  // 姓名列归位：多个姓名列时，拉丁字母多的当越文名，纯中文的当中文名
+  (function () {
+    var nameCols = [];
+    for (var ci = 0; ci < n; ci++) if (roles[ci] === 'nameVi' || roles[ci] === 'nameCn') nameCols.push(ci);
+    if (!nameCols.length) return;
+    var lat = [], cn = [];
+    nameCols.forEach(function (ci) {
+      var l = 0, c = 0, tot = 0;
+      dataRows0.forEach(function (r) {
+        var v = String(r[ci] == null ? '' : r[ci]).trim();
+        if (!v) return;
+        tot++;
+        if (/[A-Za-zÀ-ỹ]/.test(v)) l++;
+        if (/[\u4e00-\u9fff]/.test(v)) c++;
+      });
+      lat.push(tot ? l / tot : 0);
+      cn.push(tot ? c / tot : 0);
+    });
+    // 已有明确 nameCn 的列保持不动；其余按内容打分
+    var fixed = nameCols.map(function (ci) { return roles[ci] === 'nameCn'; });
+    // 有中文名但没有越文名时，从剩余未识别列里挑一个最像姓名的（拉丁字母、长度>=3）
+    if (!nameCols.some(function (ci) { return roles[ci] === 'nameVi'; })) {
+      var cand = -1, csc = -1;
+      for (var cj = 0; cj < n; cj++) {
+        if (roles[cj] && roles[cj] !== '-') continue;
+        var l2 = 0, tot2 = 0;
+        dataRows0.forEach(function (r) {
+          var v = String(r[cj] == null ? '' : r[cj]).trim();
+          if (!v) return;
+          tot2++;
+          if (/[A-Za-zÀ-ỹ]/.test(v) && v.length >= 3) l2++;
+        });
+        if (!tot2) continue;
+        var sc2 = l2 / tot2;
+        if (sc2 > csc) { csc = sc2; cand = cj; }
+      }
+      if (cand >= 0 && csc >= 0.5) { roles[cand] = 'nameVi'; return; }
+    }
+    if (nameCols.length === 1) {
+      // 只有一列姓名且内容为纯中文 → 归到中文名更准确
+      if (!fixed[0] && cn[0] > 0.5 && lat[0] < 0.2) roles[nameCols[0]] = 'nameCn';
+      return;
+    }
+    var bestVi = -1, bs = -1;
+    nameCols.forEach(function (ci, k) {
+      if (fixed[k]) return;
+      var sc = lat[k] * 2 - cn[k];
+      if (sc > bs) { bs = sc; bestVi = k; }
+    });
+    if (bestVi < 0) return;
+    nameCols.forEach(function (ci, k) {
+      if (fixed[k]) return;
+      roles[ci] = (k === bestVi) ? 'nameVi' : 'nameCn';
+    });
+  })();
+  // 空缺的角色用数据特征补；仍无工号列则强制取猜测结果
+  for (var c5 = 0; c5 < n; c5++) if (!roles[c5] && gGuess[c5] && gGuess[c5] !== '-') roles[c5] = gGuess[c5];
+  if (roles.indexOf('empNo') < 0 && gGuess.indexOf('empNo') >= 0) {
+    roles[gGuess.indexOf('empNo')] = 'empNo';
+  }
+
+  var out = [], skipped = 0, sample = [];
+  for (var i2 = start; i2 < rows.length; i2++) {
+    var cells = rows[i2];
+    var o = { empNo: '', nameVi: '', nameCn: '', dept: '', shift: '', factory: '', sign: null };
+    cells.forEach(function (v, ci) {
+      var f = (map && map[ci] && map[ci] !== 'auto') ? map[ci] : (roles[ci] || '-');
+      if (!f || f === '-' || f === 'stt') return;
+      var vv = String(v).trim();
+      if (f === 'nameVi' && vv.indexOf('/') >= 0) {
+        var pp = vv.split('/'); o.nameVi = pp[0].trim(); o.nameCn = (pp[1] || '').trim(); return;
+      }
+      if (f === 'nameCn' && vv.indexOf('/') >= 0) {
+        var pp2 = vv.split('/');
+        o.nameCn = pp2[pp2.length - 1].trim();
+        if (!o.nameVi) o.nameVi = pp2[0].trim();
+        return;
+      }
+      o[f] = vv;
+    });
+    if (!o.empNo) { skipped++; continue; }
+    out.push(o);
+    if (sample.length < 3) sample.push(cells.slice(0));
+  }
+  var why = out.length ? '' : (rows.length ? '没有识别出任何带工号的数据行，请检查列对应关系' : '内容为空');
+  return { list: out, roles: roles, header: header, nCols: n, sample: sample, skipped: skipped, why: why };
+}
+function splitLine(line) {
+  if (line.indexOf('\t') >= 0) return line.split('\t');
+  var res = [], cur = '', q = false;
+  for (var i = 0; i < line.length; i++) {
+    var c = line[i];
+    if (c === '"') { q = !q; continue; }
+    if ((c === ',' || c === ';') && !q) { res.push(cur); cur = ''; continue; }
+    cur += c;
+  }
+  res.push(cur);
+  return res.map(function (x) { return x.trim(); });
+}
+function loadXLSX(cb) {
+  if (window.XLSX) return cb(null);
+  var s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+  s.onload = function () { cb(null); };
+  s.onerror = function () { cb(new Error('load')); };
+  document.head.appendChild(s);
+}
+function download(name, content) {
+  var a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(content);
+  a.download = name; a.click();
+}
+
+/* --- 步骤3：发布二维码 --- */
+function viewPub(d) {
+  var base = d.baseUrl || defaultBase();
+  var url = base + (base.indexOf('?') >= 0 ? '&' : '?') + 'doc=' + d.id;
+  var isFile = /^file:/i.test(base);
+  return '<div class="card" style="background:#fafcfd"><h2>数据回传设置（员工签名能否回到 HR 端）</h2>' +
+    '<p class="hint">当前状态：<span id="modeTag2"></span></p>' +
+    '<div class="bar" style="margin-bottom:10px">' +
+    '<input id="apiBase" placeholder="后端地址，例如 https://xxx.workers.dev/api" style="max-width:420px" ' +
+    'value="' + esc(API.on ? API.base : '') + '">' +
+    '<button class="sec" id="setApi">连接</button>' +
+    '<button class="ghost" id="clrApi">清除</button><span class="sp"></span></div>' +
+    '<div id="apiMsg"></div>' +
+    '<div class="notice info">把网页发到 GitHub Pages（免费 HTTPS）后，员工手机能打开页面，' +
+    '但<b>签名需要一个存放的地方</b>——填入后端地址即可自动回传给 HR。' +
+    '公司自建服务器填 <span class="mono">http://服务器地址:8080/api</span>。</div></div>' +
+    '<div class="card"><h2>3. 发布：生成二维码发给员工</h2>' +
+    '<p class="hint">员工扫码后输入工号登录，即可阅读协议并手写签字</p>' +
+    '<div style="margin-bottom:14px"><label>扫码地址（员工手机打开这个页面）</label>' +
+    '<input id="base" value="' + esc(base) + '" placeholder="例如 http://192.168.1.50:8080/自愿加班协商书签署系统.html">' +
+    '<div class="mini" style="margin-top:6px">默认是本机打开地址。局域网使用时，请把这里改成电脑的内网 IP 地址，员工连同一 WiFi 才能扫开。</div></div>' +
+    '<div class="qrbox">' +
+    '<div class="code"><canvas id="qr" width="240" height="240"></canvas>' +
+    '<div class="cap">单据 ' + esc(d.docNo || d.id) + '<br>' + esc(url) + '</div>' +
+    '<div class="bar" style="justify-content:center;margin-top:10px">' +
+    '<button class="sec" id="dlqr">下载二维码图片</button>' +
+    '<button class="sec" id="copy">复制链接</button></div></div>' +
+    '<div class="qrinfo">' +
+    '<div class="notice info"><b>怎么让员工扫到？</b><br>' +
+    '① 把本文件放在一台内网电脑上，用 <span class="mono">python -m http.server 8080</span> 启动；<br>' +
+    '② 上方地址改成 <span class="mono">http://电脑内网IP:8080/文件名.html</span>；<br>' +
+    '③ 下载二维码，打印张贴在车间，或截图发到班组群。</div>' +
+    (isFile ? '<div class="notice">当前是本地文件地址（file://），手机扫不开。请按上面三步改为 http:// 内网地址。</div>' : '') +
+    '<div style="margin-top:12px"><label>员工登录后看到</label>' +
+    '<div class="mono" style="background:#f6f9fb;border:1px solid var(--line);border-radius:6px;padding:10px;font-size:11.5px">' +
+    '→ 输入工号 <b>' + esc(d.employees[0] ? d.employees[0].empNo : 'XXXXXXXX') + '</b><br>' +
+    '→ 阅读' + esc(d.docNo || '协商书') + '双语全文<br>' +
+    '→ 手写签名 + 勾选自愿<br>' +
+    '→ 系统记录签名时间（精确到分）与地点</div></div>' +
+    '<div class="bar" style="margin-top:14px"><button class="sec" id="prev">预览员工端</button>' +
+    '<span class="sp"></span><button class="ghost" id="back">← 上一步</button><button id="next">下一步：进度看板 →</button></div>' +
+    '</div></div></div>';
+}
+function defaultBase() {
+  var u = location.href.split('?')[0].split('#')[0];
+  return u;
+}
+function bindPub(d) {
+  var p = document.getElementById('pane');
+  var cv = p.querySelector('#qr');
+  var base = d.baseUrl || defaultBase();
+  var url = base + (base.indexOf('?') >= 0 ? '&' : '?') + 'doc=' + d.id;
+  drawQR(cv, url);
+  p.querySelector('#base').addEventListener('input', function () {
+    d.baseUrl = this.value.trim(); save();
+    var b = d.baseUrl || defaultBase();
+    drawQR(cv, b + (b.indexOf('?') >= 0 ? '&' : '?') + 'doc=' + d.id);
+    p.querySelector('.qrbox .cap').innerHTML = '单据 ' + esc(d.docNo || d.id) + '<br>' + esc(b + '?doc=' + d.id);
+  });
+  p.querySelector('#dlqr').onclick = function () {
+    var a = document.createElement('a');
+    a.download = '二维码_' + (d.docNo || d.id) + '.png';
+    a.href = cv.toDataURL('image/png'); a.click();
+  };
+  p.querySelector('#copy').onclick = function () {
+    var t = p.querySelector('#base').value.trim() || defaultBase();
+    var full = t + (t.indexOf('?') >= 0 ? '&' : '?') + 'doc=' + d.id;
+    if (navigator.clipboard) navigator.clipboard.writeText(full);
+    infoBox('已复制', '<div class="mono" style="font-size:12px;word-break:break-all">' + esc(full) + '</div>');
+  };
+  p.querySelector('#prev').onclick = function () { S.tab = 'emp'; renderShell(); };
+  p.querySelector('#back').onclick = function () { S.view = 'emp'; renderHR(); };
+  p.querySelector('#next').onclick = function () { S.view = 'board'; renderHR(); };
+  var ab = p.querySelector('#apiBase'), am = p.querySelector('#apiMsg'), mt2 = p.querySelector('#modeTag2');
+  function paintApi() {
+    if (!mt2) return;
+    if (API.on) { mt2.className = 'pill ok'; mt2.textContent = '已连接 ' + API.base + ' · 员工签名会自动回传'; }
+    else { mt2.className = 'pill wait'; mt2.textContent = '未连接后端 · 只能本机演示，收不到员工签名'; }
+  }
+  paintApi();
+  var sa = p.querySelector('#setApi');
+  if (sa) sa.onclick = function () {
+    var v = (ab.value || '').trim().replace(/\/+$/, '');
+    if (!v) { am.innerHTML = '<div class="notice">请填写后端地址</div>'; return; }
+    am.innerHTML = '<div class="notice info">正在连接…</div>';
+    fetch(v + '/ping', { cache: 'no-store' }).then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (!j.ok) { am.innerHTML = '<div class="notice">连接失败：地址不可用</div>'; return; }
+        API.base = v; API.on = true; API.mode = 'server';
+        try { localStorage.setItem('OT_API_BASE', v); } catch (e) { }
+        paintApi(); paintMode();
+        am.innerHTML = '<div class="notice info">已连接。名单会自动上传，员工签名将回传到本机。</div>';
+        scheduleSync(d);
+      }).catch(function (e) { am.innerHTML = '<div class="notice">连接失败：' + esc(e.message) + '</div>'; });
+  };
+  var ca = p.querySelector('#clrApi');
+  if (ca) ca.onclick = function () {
+    try { localStorage.removeItem('OT_API_BASE'); } catch (e) { }
+    API.base = ''; API.on = false; API.mode = 'local';
+    ab.value = ''; paintApi(); paintMode();
+    am.innerHTML = '<div class="notice info">已清除，转为本地演示模式。</div>';
+  };
+}
+function drawQR(cv, text) {
+  var m;
+  try { m = QRGEN.make(text, 'M'); } catch (e) { m = null; }
+  var ctx = cv.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cv.width, cv.height);
+  if (!m) { ctx.fillStyle = '#c0392b'; ctx.fillText('地址过长', 10, 30); return; }
+  var n = m.length, q = 4, cell = cv.width / (n + q * 2);
+  ctx.fillStyle = '#0b2545';
+  for (var r = 0; r < n; r++) for (var c = 0; c < n; c++) if (m[r][c]) ctx.fillRect((c + q) * cell, (r + q) * cell, cell + .5, cell + .5);
+  // 中心 logo 留白
+  ctx.fillStyle = '#fff';
+  var s = cell * 6, o = (cv.width - s) / 2;
+  ctx.fillRect(o, o, s, s);
+  ctx.strokeStyle = '#0b2545'; ctx.lineWidth = 2; ctx.strokeRect(o, o, s, s);
+  ctx.fillStyle = '#0b2545'; ctx.font = 'bold ' + Math.round(s * .52) + 'px sans-serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('✍', cv.width / 2, cv.height / 2 + 1);
+}
+
+/* --- 步骤4：看板与打印 --- */
+function viewBoard(d) {
+  var st = calcStats(d.employees);
+  // 万人级：名单分页 + 搜索，避免一次渲染上万行卡死
+  var q = (S.q || '').trim().toLowerCase();
+  var pool = d.employees.map(function (e, i) { return { e: e, i: i }; });
+  if (q) pool = pool.filter(function (x) {
+    var e = x.e;
+    return (String(e.empNo) + ' ' + (e.nameVi || '') + ' ' + (e.nameCn || '') + ' ' +
+      (e.dept || '') + ' ' + (e.shift || '') + ' ' + pickWorkPlace(e)).toLowerCase().indexOf(q) >= 0;
+  });
+  var PER = 200, pages = Math.max(1, Math.ceil(pool.length / PER));
+  if (S.page >= pages) S.page = pages - 1;
+  var part = pool.slice(S.page * PER, S.page * PER + PER);
+  var rows = '';
+  part.forEach(function (x) {
+    var e = x.e, i = x.i, s2 = e.sign, c = choiceOf(s2);
+    rows += '<tr><td style="text-align:center">' + (i + 1) + '</td><td class="mono">' + esc(e.empNo) + '</td>' +
+      '<td>' + esc(e.nameVi) + (e.nameCn ? '<div class="mini">' + esc(e.nameCn) + '</div>' : '') + '</td>' +
+      '<td>' + esc(e.dept) + '</td>' + '<td style="text-align:center">' + esc(e.shift) + '</td>' +
+      '<td class="mini">' + esc(pickWorkPlace(e)) + '</td>' +
+      '<td>' + (c === 'decline' ? '<span class="pill no">不同意</span>' : c === 'agree' ? '<span class="pill ok">同意</span>' : '<span class="pill wait">未响应</span>') +
+      (s2 && s2.manual ? ' <span class="pill" style="background:#eef2f6;color:#5a6b7c">手填地点</span>' : '') + '</td>' +
+      '<td class="mini">' + (s2 ? esc(s2.time) : '—') + (s2 ? '<div class="mono" style="font-size:10px;color:#5a6b7c">' + esc(s2.hash) + '</div>' : '') + '</td>' +
+      '<td class="mini">' + esc(pickWorkPlace(e)) + '</td>' +
+      '<td style="width:70px;text-align:center">' + (s2 ? '<button class="danger" data-un="' + i + '">撤销</button>' : '') + '</td></tr>';
+  });
+  return statTable(st.byDept, '按部门统计', '部门 Bộ phận') +
+    (st.byPlace.length > 1 || (st.byPlace.length === 1 && st.byPlace[0].dept !== '未选择') ?
+      statTable(st.byPlace, '按工作地点统计（员工签字时自选，后勤安排用）', '工作地点 Địa điểm') : '') +
+    '<div class="card"><h2>签署进度</h2><p class="hint">签名一经提交不可修改；确需作废请用「撤销」（会留下空白，验厂可见）</p>' +
+    '<div class="bar" style="margin-bottom:12px">' +
+    '<b style="font-size:16px">同意 <span style="color:var(--ok)">' + st.agree + '</span>' +
+    ' · 不同意 <span style="color:var(--err)">' + st.decline + '</span>' +
+    ' · 未响应 <span style="color:var(--warn)">' + st.none + '</span>' +
+    ' <span class="mini">/ 共 ' + st.total + ' 人</span></b>' +
+    '<span class="pill ' + (st.rate === 100 ? 'ok' : 'wait') + '">自愿率 ' + st.rate + '%</span><span class="sp"></span>' +
+    '<button class="ghost" id="reload">刷新</button>' +
+    '<button class="sec" id="copyun">复制未响应工号</button>' +
+    '<button class="sec" id="csv">导出签名明细 CSV</button>' +
+    '<button id="prt">导出 A4 打印（验厂用）</button></div>' +
+    '<div class="card" style="background:#fafcfd"><h2>设定谁能看各部门结果</h2>' +
+    '<p class="hint">填入工号并指定部门 → 这些人用自己的<b>工号</b>进入查询页，即可看到本部门进度（只读）。' +
+    '可粘贴一列工号批量添加。</p>' +
+    '<div class="bar" style="margin-bottom:10px">' + departmentSelect(d, 'dvDept') +
+    '<input id="vno" placeholder="工号，多个用逗号/换行分隔" style="max-width:300px">' +
+    '<button class="sec" id="addv">添加为查看人</button><span class="sp"></span></div>' +
+    viewerTable(d) +
+    '<div class="bar" style="margin-top:10px"><button class="sec" id="mkq">生成部门查询二维码</button>' +
+    '<span class="sp"></span></div>' +
+    '<div id="keybox"></div>' +
+    '<div class="notice info" style="margin-top:10px">查看人只能看到自己所属部门，看不到其他部门，也不能修改或撤销。' +
+    '二维码指向「输入工号」页，拿到的人若工号未授权则打不开。</div></div>' +
+    '<div class="bar" style="margin-bottom:10px">' +
+    '<input id="q" placeholder="搜索工号 / 姓名 / 部门 / 班组 / 厂区" value="' + esc(S.q || '') + '" style="max-width:320px">' +
+    '<span class="mini">显示 ' + (pool.length ? S.page * PER + 1 : 0) + '–' +
+    Math.min(pool.length, S.page * PER + PER) + ' 条，共 ' + pool.length + ' 条</span><span class="sp"></span>' +
+    '<button class="ghost" id="pgPrev"' + (S.page <= 0 ? ' disabled' : '') + '>上一页</button>' +
+    '<button class="ghost" id="pgNext"' + (S.page >= pages - 1 ? ' disabled' : '') + '>下一页</button></div>' +
+    '<div class="tbl-wrap"><table><thead><tr><th>STT</th><th>工号</th><th>姓名</th><th>部门</th><th>班组</th><th>工作地点</th><th>状态</th><th>签名时间 / 防伪码</th><th>地点</th><th></th></tr></thead><tbody>' +
+    (rows || '<tr><td colspan="10" class="empty">' + (q ? '没有匹配的人员' : '名单为空') + '</td></tr>') + '</tbody></table></div>' +
+    '<div class="bar" style="margin-top:14px"><button class="ghost" id="back">← 返回发布</button>' +
+    '<span class="sp"></span><button class="ghost" id="tolist">返回列表</button></div></div>';
+}
+function viewerTable(d) {
+  var vs = d.viewers || [];
+  if (!vs.length) return '<div class="notice info">还没有授权查看人。选择部门、填入工号后点「添加」。</div>';
+  var h = '<div class="tbl-wrap"><table><thead><tr><th>工号</th><th>可看部门</th><th>姓名</th><th></th></tr></thead><tbody>';
+  vs.forEach(function (v, i) {
+    var emp = null;
+    d.employees.forEach(function (e) { if (String(e.empNo).trim() === String(v.empNo).trim()) emp = e; });
+    h += '<tr><td class="mono">' + esc(v.empNo) + '</td><td><b>' + esc(v.dept) + '</b></td>' +
+      '<td>' + (emp ? esc(emp.nameVi) + (emp.nameCn ? ' / ' + esc(emp.nameCn) : '') : '<span class="mini">（不在名单中）</span>') + '</td>' +
+      '<td style="width:60px;text-align:center"><button class="danger" data-rmv="' + i + '">移除</button></td></tr>';
+  });
+  return h + '</tbody></table></div>';
+}
+function departmentSelect(d, id) {
+  var m = {}, out = [];
+  d.employees.forEach(function (e) {
+    var k = (e.dept || '').trim() || '未填部门';
+    if (!m[k]) { m[k] = 1; out.push(k); }
+  });
+  out.sort();
+  var h = '<select id="' + id + '" style="max-width:280px">';
+  out.forEach(function (k) { h += '<option value="' + esc(k) + '">' + esc(k) + '</option>'; });
+  return h + '</select>';
+}
+function bindBoard(d) {
+  var p = document.getElementById('pane');
+  var keybox = p.querySelector('#keybox');
+
+  function makeKeys(depts) {
+    if (!depts.length) { keybox.innerHTML = '<div class="notice">名单里还没有部门信息。</div>'; return; }
+    keybox.innerHTML = '<div class="notice info">正在生成…</div>';
+    var build = function (keys) {
+      var base = location.href.split('?')[0].split('#')[0];
+      var h = '<div class="tbl-wrap"><table><thead><tr><th>车间</th><th>只读链接 / 二维码</th></tr></thead><tbody>';
+      depts.forEach(function (dp) {
+        var k = keys[dp] || localDeptKey(d.id, dp);
+        var url = base + '?doc=' + encodeURIComponent(d.id) + '&dept=' + encodeURIComponent(dp) + '&key=' + k;
+        h += '<tr><td><b>' + esc(dp) + '</b></td><td>' +
+          '<div class="bar"><input readonly value="' + esc(url) + '" class="mono" style="font-size:11px">' +
+          '<button class="sec" data-cp="' + esc(url) + '">复制</button>' +
+          '<button class="sec" data-qr="' + esc(url) + '" data-dp="' + esc(dp) + '">二维码</button></div></td></tr>';
+      });
+      h += '</tbody></table></div><div id="qrzone" style="margin-top:12px"></div>';
+      keybox.innerHTML = h;
+      Array.prototype.forEach.call(keybox.querySelectorAll('[data-cp]'), function (el) {
+        el.onclick = function () {
+          var u = el.getAttribute('data-cp');
+          if (navigator.clipboard) navigator.clipboard.writeText(u);
+          el.textContent = '已复制'; setTimeout(function () { el.textContent = '复制'; }, 1200);
+        };
+      });
+      Array.prototype.forEach.call(keybox.querySelectorAll('[data-qr]'), function (el) {
+        el.onclick = function () {
+          var z = document.getElementById('qrzone');
+          z.innerHTML = '<div class="qrbox"><div class="code"><canvas id="dvqr" width="220" height="220"></canvas>' +
+            '<div class="cap"><b>' + esc(el.getAttribute('data-dp')) + '</b> 车间查看码<br>' +
+            '<span class="mini">扫码只看本车间</span></div>' +
+            '<button class="sec" id="dlq" style="margin-top:8px">下载二维码</button></div></div>';
+          var cv = document.getElementById('dvqr');
+          drawQR(cv, el.getAttribute('data-qr'));
+          document.getElementById('dlq').onclick = function () {
+            var a = document.createElement('a');
+            a.download = '车间查看码_' + el.getAttribute('data-dp') + '.png';
+            a.href = cv.toDataURL('image/png'); a.click();
+          };
+          try { z.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) { }
+        };
+      });
+    };
+    if (API.on) {
+      apiPost('/deptkeys', { docId: d.id, depts: depts })
+        .then(function (j) { build(j.ok ? (j.keys || {}) : {}); })
+        .catch(function () { build({}); });
+    } else build({});
+  }
+
+  var addv = p.querySelector('#addv');
+  if (addv) addv.onclick = function () {
+    var sel = p.querySelector('#dvDept'), inp = p.querySelector('#vno');
+    if (!sel || !inp) return;
+    var dept = sel.value;
+    var raw = inp.value.split(/[,\s;；，]+/).filter(function (x) { return x.trim(); });
+    if (!raw.length) { msg2('请填写工号', true); return; }
+    function msg2(t, bad) { var z = p.querySelector('#vmsg'); if (z) z.innerHTML = '<div class="notice' + (bad ? '' : ' info') + '">' + esc(t) + '</div>'; }
+    d.viewers = d.viewers || [];
+    var added = 0;
+    raw.forEach(function (no) {
+      no = no.trim();
+      if (d.viewers.some(function (v) { return String(v.empNo).trim() === no; })) return;
+      d.viewers.push({ empNo: no, dept: dept }); added++;
+    });
+    inp.value = '';
+    save();
+    if (API.on) {
+      apiPost('/viewers', { docId: d.id, viewers: d.viewers }).then(function () { renderHR(); });
+    } else renderHR();
+  };
+  Array.prototype.forEach.call(p.querySelectorAll('[data-rmv]'), function (el) {
+    el.onclick = function () {
+      d.viewers.splice(+el.getAttribute('data-rmv'), 1);
+      save();
+      if (API.on) apiPost('/viewers', { docId: d.id, viewers: d.viewers || [] }).then(function () { renderHR(); });
+      else renderHR();
+    };
+  });
+  var mkq = p.querySelector('#mkq');
+  if (mkq) mkq.onclick = function () {
+    var base = location.href.split('?')[0].split('#')[0];
+    var url = base + '?doc=' + encodeURIComponent(d.id) + '&view=1';
+    var z = document.getElementById('keybox');
+    z.innerHTML = '<div class="qrbox"><div class="code"><canvas id="vqr" width="220" height="220"></canvas>' +
+      '<div class="cap"><b>部门进度查询</b><br><span class="mini">扫码输入工号查看本部门</span></div>' +
+      '<input readonly value="' + esc(url) + '" class="mono" style="margin-top:8px;font-size:11px">' +
+      '<button class="sec" id="dlvq" style="margin-top:8px">下载二维码</button></div></div>';
+    var cv = document.getElementById('vqr');
+    drawQR(cv, url);
+    document.getElementById('dlvq').onclick = function () {
+      var a = document.createElement('a');
+      a.download = '部门进度查询码.png'; a.href = cv.toDataURL('image/png'); a.click();
+    };
+    try { z.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) { }
+  };
+
+  var qq = p.querySelector('#q');
+  if (qq) {
+    qq.oninput = function () { S.q = this.value; S.page = 0; };
+    qq.onchange = function () { renderHR(); };
+    qq.onkeydown = function (e) { if (e.key === 'Enter') renderHR(); };
+  }
+  var pv = p.querySelector('#pgPrev'), nx = p.querySelector('#pgNext');
+  if (pv) pv.onclick = function () { S.page--; renderHR(); };
+  if (nx) nx.onclick = function () { S.page++; renderHR(); };
+
+  p.querySelector('#reload').onclick = function () {
+    if (API.on) {
+      apiGet('/doc/' + encodeURIComponent(d.id)).then(function (j) {
+        if (j.ok && j.doc) { replaceDoc(j.doc); }
+        renderHR();
+      }).catch(function () { renderHR(); });
+    } else renderHR();
+  };
+  p.querySelector('#back').onclick = function () { S.view = 'pub'; renderHR(); };
+  p.querySelector('#tolist').onclick = function () { S.view = 'list'; renderHR(); };
+  p.querySelector('#prt').onclick = function () { printDialog(d); };
+  p.querySelector('#csv').onclick = function () {
+    var lines = ['\ufeffSTT,工作地点,工号,姓名(越),姓名(中),部门,班组,意向,签名时间,GPS纬度,GPS经度,定位方式,防伪码'];
+    d.employees.forEach(function (e, i) {
+      var s2 = e.sign || {}, c = choiceOf(s2);
+      lines.push([i + 1, pickWorkPlace(e), e.empNo, e.nameVi, e.nameCn, e.dept, e.shift,
+        !s2.hash ? '未响应' : (c === 'decline' ? '不同意加班' : '自愿加班'),
+        s2.time || '', pickWorkPlace(e), s2.lat || '', s2.lng || '', s2.gps ? 'GPS' : '仅地点', s2.hash || '']
+        .map(csvq).join(','));
+    });
+    download('签名明细_' + (d.docNo || d.id) + '.csv', lines.join('\n'));
+  };
+  p.querySelector('#copyun').onclick = function () {
+    var un = d.employees.filter(function (e) { return !e.sign; }).map(function (e) { return e.empNo; });
+    if (!un.length) { infoBox('未响应名单', '<p>全部已响应。</p>'); return; }
+    var txt = un.join(', ');
+    if (navigator.clipboard) navigator.clipboard.writeText(txt);
+    infoBox('未响应 ' + un.length + ' 人', '<p>已复制到剪贴板：</p><div class="mono" style="font-size:12px;word-break:break-all;max-height:220px;overflow:auto">' +
+      esc(txt.slice(0, 2000)) + (txt.length > 2000 ? '…' : '') + '</div>');
+  };
+  Array.prototype.forEach.call(p.querySelectorAll('[data-un]'), function (el) {
+    el.onclick = function () {
+        var e0 = d.employees[+el.getAttribute('data-un')];
+      askBox('撤销签名', '<p>将撤销 <b>' + esc(e0.empNo) + ' ' + esc(e0.nameVi || '') + '</b> 的签名，撤销后签名栏留空（验厂可见）。</p>',
+        '确定撤销', true, function (ok) {
+          if (!ok) return;
+          e0.sign = null; save();
+          if (API.on) apiPost('/unsign', { docId: d.id, empNo: e0.empNo }).then(function () { renderHR(); });
+          else renderHR();
+        });
+    };
+  });
+  // 服务器模式自动跟进签名
+  if (S._t) clearInterval(S._t);
+  if (API.on) {
+    S._t = setInterval(function () {
+      if (S.view !== 'board' || !document.getElementById('pane')) { clearInterval(S._t); return; }
+      apiGet('/doc/' + encodeURIComponent(d.id)).then(function (j) {
+        if (j.ok && j.doc) {
+          var before = d.employees.filter(function (x) { return x.sign; }).length;
+          replaceDoc(j.doc);
+          var after = d.employees.filter(function (x) { return x.sign; }).length;
+          if (after !== before) renderHR();
+        }
+      }).catch(function () { });
+    }, 6000);
+  }
+}
+function replaceDoc(nd) {
+  for (var i = 0; i < DB.docs.length; i++) {
+    if (DB.docs[i].id === nd.id) { DB.docs[i] = nd; save(); return; }
+  }
+  DB.docs.unshift(nd); save();
+}
+/* ================= A4 打印 ================= */
+function printDialog(d) {
+  var depts = [];
+  var m = {};
+  d.employees.forEach(function (e) {
+    var k = (e.dept || '').trim() || '未填部门';
+    if (!m[k]) { m[k] = 1; depts.push(k); }
+  });
+  depts.sort();
+  var body = '<div class="card"><h2>选择打印范围</h2><p class="hint">' +
+    '共 ' + d.employees.length + ' 人、' + depts.length + ' 个部门。' +
+    '人数多时建议<b>按部门分批打印</b>，避免浏览器一次渲染过多页面卡死。</p>' +
+    '<div class="bar" style="margin:12px 0">' +
+    '<button id="pAll">全部 ' + d.employees.length + ' 人</button>' +
+    '<span class="sp"></span></div>' +
+    '<div class="grid g4" style="margin-top:6px">';
+  depts.forEach(function (k) {
+    var n = d.employees.filter(function (e) { return ((e.dept || '').trim() || '未填部门') === k; }).length;
+    body += '<button class="sec" data-pd="' + esc(k) + '">' + esc(k) + '<div class="mini">' + n + ' 人</div></button>';
+  });
+  body += '</div><div class="bar" style="margin-top:14px"><button class="ghost" id="pc">取消</button></div></div>';
+  document.getElementById('body').insertAdjacentHTML('beforeend', body);
+  var box = document.getElementById('body').lastElementChild;
+  box.querySelector('#pAll').onclick = function () { box.remove(); doPrint(d, ''); };
+  box.querySelector('#pc').onclick = function () { box.remove(); };
+  Array.prototype.forEach.call(box.querySelectorAll('[data-pd]'), function (el) {
+    el.onclick = function () { box.remove(); doPrint(d, el.getAttribute('data-pd')); };
+  });
+  try { box.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) { }
+}
+function doPrint(d, deptFilter) {
+  var root = document.getElementById('print-root');
+  var src = d;
+  if (deptFilter) {
+    src = JSON.parse(JSON.stringify(d));
+    src.employees = d.employees.filter(function (e) { return ((e.dept || '').trim() || '未填部门') === deptFilter; });
+  }
+  root.innerHTML = buildPages(src);
+  // 等待图片解码
+  var imgs = root.querySelectorAll('img');
+  var left = imgs.length, done = false;
+  function go() { if (done) return; done = true; window.print(); }
+  setTimeout(go, 1800);            // 兜底：图片事件万一不触发也不会卡住
+  if (!left) { setTimeout(go, 60); return; }
+  Array.prototype.forEach.call(imgs, function (im) {
+    if (im.complete) { if (--left === 0) setTimeout(go, 60); }
+    else { im.onload = im.onerror = function () { if (--left === 0) setTimeout(go, 60); }; }
+  });
+}
+function buildPages(d) {
+  /* A4 纵向：版心高约 274mm。行高按「签名图 7mm + 自愿标记 + 单元格内边距」实测取 13mm，
+     宁可每页少放几行，也不能溢出到下一页。 */
+  var ROW = 13;
+  var rep = !!d.showRepSign;
+  var bodyMm = 18 + d.shifts.length * 15 + 10;   // 正文（放假/原因/各时间段/地点）
+  var firstRows = Math.max(4, Math.floor((272 - 26 - 13 - bodyMm - 10) / ROW));
+  var restRows = Math.max(6, Math.floor((272 - 14 - 10 - 10) / ROW));
+  // 末页要留公司/工会代表签字栏，容量少 2 行
+  var capOf = function (P) {
+    if (P <= 1) return firstRows - (rep ? 2 : 0);
+    return firstRows + (P - 2) * restRows + (restRows - (rep ? 2 : 0));
+  };
+  var n = d.employees.length, P = 1;
+  var ag = 0, dec = 0, no = 0;
+  d.employees.forEach(function (e) {
+    if (!e.sign) no++;
+    else if (choiceOf(e.sign) === 'decline') dec++;
+    else ag++;
+  });
+  while (capOf(P) < n && P < 200) P++;
+  var chunks = [], i = 0;
+  for (var pi = 0; pi < P; pi++) {
+    var c = (pi === 0) ? firstRows : (pi === P - 1 ? restRows - (rep ? 2 : 0) : restRows);
+    chunks.push(d.employees.slice(i, i + c)); i += c;
+  }
+  var total = chunks.length, html = '';
+  chunks.forEach(function (part, pi) {
+    var isFirst = pi === 0;
+    html += '<div class="pg">';
+    html += '<div class="p-hd"><div class="cn1">' + esc(d.companyVi).toUpperCase() + '</div>' +
+      '<div class="cn2">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM<br>Độc lập - Tự do - Hạnh phúc</div>' +
+      '<div class="cn3">---------------</div>' +
+      '<div class="dt">Ngày ' + esc(d.dd) + ' tháng ' + esc(d.dm) + ' năm ' + esc(d.dy) + '</div></div>';
+    if (isFirst) {
+      html += '<div class="p-ttl"><div class="v">VĂN BẢN THỎA THUẬN TỰ NGUYỆN LÀM THÊM GIỜ</div>' +
+        '<div class="c">员 工 自 愿 加 班 协 商 书</div></div>';
+      html += '<div class="p-body">';
+      html += '<p><span class="k">Thời gian nghỉ lễ / 放假时间：</span><br><span class="vi">' + esc(d.holidayVi) + '</span><br>' + esc(d.holidayCn) + '</p>';
+      html += '<p><span class="k">Lý do làm thêm / 加班原因及加班费：</span><br><span class="vi">' + esc(d.reasonVi) + '</span><br>' + esc(d.reasonCn) + '</p>';
+      html += '<p><span class="k">Thời gian làm thêm / 加班时间及加班费：</span></p>';
+      d.shifts.forEach(function (s, si) {
+        html += '<p style="margin-left:4mm">' + (si + 1) + '. <span class="vi">' + esc(s.vi) + '</span><br>' + esc(s.cn) + '</p>';
+      });
+      if (d.workPlaces && d.workPlaces.length) {
+        html += '<p><span class="k">Địa điểm làm thêm / 加班地点：</span>' +
+          '由每位员工在签字时自行选择（' + esc(d.workPlaces.join('；')) + '）</p>';
+      }
+      html += '</div>';
+      html += '<div class="p-sum">Đồng ý 同意加班 ' + ag + ' 人 &nbsp;·&nbsp; Không đồng ý 不同意加班 ' + dec +
+        ' 人 &nbsp;·&nbsp; Chưa phản hồi 未响应 ' + no + ' 人 &nbsp;·&nbsp; Tổng 共 ' + d.employees.length + ' 人</div>';
+    } else {
+      html += '<div class="p-cont">（续表 / Tiếp theo）VĂN BẢN THỎA THUẬN TỰ NGUYỆN LÀM THÊM GIỜ — 员工自愿加班协商书</div>';
+    }
+    html += '<table class="pt"><colgroup><col style="width:5%"><col style="width:10%"><col style="width:16%">' +
+      '<col style="width:10%"><col style="width:4%"><col style="width:13%"><col style="width:20%"><col style="width:22%"></colgroup>';
+    html += '<thead><tr><th>STT<br>序号</th><th>Số thẻ<br>工号</th><th>Họ tên<br>姓名</th><th>Bộ phận<br>部门</th>' +
+      '<th>Ca<br>班组</th><th>Địa điểm làm thêm<br>工作地点</th><th>Công nhân ký tên<br>员工签名</th><th>Thời gian ký<br>签名时间</th></tr></thead><tbody>';
+    part.forEach(function (e, k) {
+      var idx = chunks.slice(0, pi).reduce(function (a, c) { return a + c.length; }, 0) + k + 1;
+      var s = e.sign;
+      html += '<tr>' +
+        '<td>' + idx + '</td>' +
+        '<td>' + esc(e.empNo) + '</td>' +
+        '<td class="nm">' + esc(e.nameVi) + (e.nameCn ? '<br>' + esc(e.nameCn) : '') + '</td>' +
+        '<td>' + esc(e.dept) + '</td>' +
+        '<td>' + esc(e.shift) + '</td>' +
+        '<td class="tm">' + esc(pickWorkPlace(e)) + '</td>' +
+        '<td>' + (s ? '<img class="sg" src="' + s.img + '"><div class="tm' + (choiceOf(s) === 'decline' ? ' dec' : '') + '">' +
+          (choiceOf(s) === 'decline' ? '✗ Không đồng ý / 不同意' : '✓ Tự nguyện / 自愿') + '</div>' : '<div class="sg-empty"></div>') + '</td>' +
+        '<td>' + (s ? '<div class="tm">' + esc(s.time) + '<div class="code">' + esc(s.hash) + '</div></div>' : '') + '</td></tr>';
+    });
+    html += '</tbody></table>';
+    if (d.showRepSign && pi === total - 1) {
+      html += '<div class="sign-row"><div><div class="ln"></div>Đại diện Công ty<br>公司代表</div>' +
+        '<div><div class="ln"></div>Đại diện Công đoàn<br>工会代表</div>' +
+        '<div><div class="ln"></div>Ngày / 日期<br>&nbsp;</div></div>';
+    }
+    html += '<div class="ft"><span>' + esc(d.companyCn) + ' · ' + esc(d.docNo || d.id) + ' · ID ' + esc(d.id) + '</span>' +
+      '<span>Trang ' + (pi + 1) + ' / ' + total + ' · 第 ' + (pi + 1) + ' 页 / 共 ' + total + ' 页</span></div>';
+    html += '</div>';
+  });
+  return html;
+}
+
+/* ================= 员工端 ================= */
+function renderEmpPreview() {
+  var b = document.getElementById('body');
+  if (!DB.docs.length) {
+    b.innerHTML = '<div class="card"><h2>还没有可签署的单据</h2><p class="hint">请先到 HR 管理端新建一张协商书</p></div>';
+    return;
+  }
+  var h = '<div class="card"><h2>员工签字端</h2><p class="hint">这是员工扫码后看到的界面。选一张单据体验完整流程</p>';
+  DB.docs.forEach(function (d) {
+    h += '<div class="bar" style="padding:10px 0;border-bottom:1px solid var(--line)"><b>' + esc(d.docNo || d.id) + '</b>' +
+      '<span class="mini">' + d.employees.length + ' 人</span><span class="sp"></span>' +
+      '<button class="sec" data-try="' + d.id + '">以员工身份打开 →</button></div>';
+  });
+  h += '</div>';
+  b.innerHTML = h;
+  Array.prototype.forEach.call(b.querySelectorAll('[data-try]'), function (el) {
+    el.onclick = function () { renderEmp(el.getAttribute('data-try')); };
+  });
+}
+
+function renderEmp(docId) {
+  var d = getDoc(docId);
+  if (!d) {
+    if (!API.on) { boot(); return; }
+    // 服务器模式：员工手机上本来就没有名单，先建占位，登录时由服务端下发
+    d = { id: docId, docNo: '', companyVi: '', companyCn: '', dy: '', dm: '', dd: '',
+      holidayVi: '', holidayCn: '', reasonVi: '', reasonCn: '', shifts: [], workPlaces: [], employees: [] };
+  }
+  EMP.doc = d; EMP.me = null;
+  document.getElementById('app').innerHTML =
+    '<div class="top"><div><h1>员工自愿加班协商书签署</h1>' +
+    '<div class="sub">' + esc(d.companyVi) + ' · ' + esc(d.companyCn) + '</div></div></div>' +
+    '<div class="emp" id="empbody"></div>';
+  empLogin();
+}
+function empLogin() {
+  var d = EMP.doc;
+  var sg = d.employees.filter(function (e) { return e.sign; }).length;
+  var cntTxt = d.employees.length ? ' · 已签 ' + sg + ' / ' + d.employees.length + ' 人' : '';
+  var dateTxt = (d.dd && d.dm && d.dy) ? ' · 文书日期 ' + esc(d.dd + '/' + d.dm + '/' + d.dy) : '';
+  document.getElementById('empbody').innerHTML =
+    '<div class="card"><h2>' + esc(d.docNo || '协商书') + '</h2>' +
+    '<p class="hint">单据编号 ' + esc(d.id) + dateTxt + cntTxt + '</p>' +
+    '<div class="login-big"><label style="text-align:center">请输入工号 / Nhập số thẻ</label>' +
+    '<input id="empno" placeholder="例如 14027464" inputmode="numeric" autocomplete="off"></div>' +
+    '<button class="big" id="go" style="margin-top:12px">下一步：查看协议</button>' +
+    '<div id="em" style="margin-top:10px"></div></div>';
+  var inp = document.getElementById('empno');
+  document.getElementById('go').onclick = tryLogin;
+  inp.onkeydown = function (e) { if (e.key === 'Enter') tryLogin(); };
+  inp.focus();
+  function tryLogin() {
+    var v = inp.value.trim();
+    if (!v) { em('请输入工号', true); return; }
+    var go = function (me) {
+      EMP.me = me;
+      if (me.sign) empDone(); else empSign();
+    };
+    if (API.on) {
+      em('正在核对…', false);
+      apiGet('/session/' + encodeURIComponent(d.id) + '?empno=' + encodeURIComponent(v))
+        .then(function (j) {
+          if (!j.ok) { em('工号 ' + esc(v) + ' 不在本次名单中，请核对或联系 HR。', true); return; }
+          EMP.meta = j.doc;
+          go(j.me);
+        }).catch(function (e) { em('网络异常，请检查手机信号后重试（' + esc(e.message) + '）', true); });
+      return;
+    }
+    var me = null;
+    for (var i = 0; i < d.employees.length; i++) if (String(d.employees[i].empNo).trim() === v) { me = d.employees[i]; break; }
+    if (!me) { em('工号 ' + esc(v) + ' 不在本次名单中，请核对或联系 HR。', true); return; }
+    go(me);
+  }
+  function em(t, bad) {
+    document.getElementById('em').innerHTML = '<div class="notice' + (bad ? '' : ' info') + '">' + t + '</div>';
+  }
+}
+function pickWorkPlace(e) {
+  var sg = e.sign;
+  if (!sg) return '';                        // 未签名：等他签字时自己选
+  return sg.workPlace || sg.place || '';
+}
+function wpSelectHtml(d) {
+  var list = (d.workPlaces || []).filter(function (v) { return v && v.trim(); });
+  if (!list.length) return '';
+  var me = EMP.me || {};
+  var h = '<label style="margin-top:12px">工作地点 / Địa điểm làm thêm（请选择你所在的厂区）</label>' +
+    '<select id="wpSel" class="big-sel"><option value="">— 请选择 / Chọn địa điểm —</option>';
+  list.forEach(function (v) { h += '<option value="' + esc(v) + '">' + esc(v) + '</option>'; });
+  h += '</select>';
+  if ((me.dept || '').trim()) {
+    h += '<div class="mini" style="margin-top:4px">你的部门：' + esc(me.dept) + '</div>';
+  }
+  return h;
+}
+function empSign() {
+  var d = EMP.doc, me = EMP.me;
+  if (EMP.meta) d = EMP.meta;      // 服务器模式：用服务端下发的协议正文
+  var docHtml = '';
+  docHtml += '<p><b>Thời gian nghỉ lễ / 放假时间：</b><br>' + esc(d.holidayVi) + '<br>' + esc(d.holidayCn) + '</p><hr>';
+  docHtml += '<p><b>Lý do làm thêm / 加班原因及加班费：</b><br>' + esc(d.reasonVi) + '<br>' + esc(d.reasonCn) + '</p><hr>';
+  docHtml += '<p><b>Thời gian làm thêm / 加班时间及加班费：</b></p>';
+  d.shifts.forEach(function (s, i) { docHtml += '<p>' + (i + 1) + '. ' + esc(s.vi) + '<br>' + esc(s.cn) + '</p>'; });
+  if (d.workPlaces && d.workPlaces.length) {
+    docHtml += '<hr><p><b>Địa điểm làm thêm / 加班地点：</b>由本人从 ' +
+      esc(d.workPlaces.join(' / ')) + ' 中选择。</p>';
+  }
+  document.getElementById('empbody').innerHTML =
+    '<div class="card"><h2>请阅读并作出选择</h2>' +
+    '<p class="hint">请完整阅读后选择。<b>愿意</b>和<b>不愿意</b>都需要签名——签名用于确认这个决定是您本人作出的，不等于同意加班。</p>' +
+    '<div class="selfbox">' +
+    '<div class="row"><span>工号 Số thẻ</span><b>' + esc(me.empNo) + '</b></div>' +
+    '<div class="row"><span>姓名 Họ tên</span><b>' + esc(me.nameVi) + (me.nameCn ? ' / ' + esc(me.nameCn) : '') + '</b></div>' +
+    '<div class="row"><span>部门 Bộ phận</span><b>' + esc(me.dept) + '</b></div>' +
+    '<div class="row"><span>班组 Ca</span><b>' + esc(me.shift) + '</b></div>' +
+     '</div>' +
+    '<div class="docbox"><h3>VĂN BẢN THỎA THUẬN TỰ NGUYỆN LÀM THÊM GIỜ<br>员工自愿加班协商书</h3>' + docHtml + '</div>' +
+    '<label style="margin-top:4px">请选择您的意向 / Chọn ý kiến của bạn</label>' +
+    '<div class="choice">' +
+    '<div class="opt" id="opt-agree"><label><input type="radio" name="ch" value="agree">' +
+    '<span><b>Đồng ý · 我愿意参加本次加班</b>' +
+    '<span class="mini">本人自愿参加，已知晓加班时间与加班费计算方式</span></span></label></div>' +
+    '<div class="opt dec" id="opt-decline"><label><input type="radio" name="ch" value="decline">' +
+    '<span><b>Không đồng ý · 我不愿意参加本次加班</b>' +
+    '<span class="mini">本人不愿参加本次加班。此处的签名仅用于确认该意向为本人所表达，不代表同意加班</span></span></label></div>' +
+    '</div>' +
+    '<div id="signArea">' +
+    '<label style="margin-top:12px">手写签名 / Ký tên（请用手指在框内书写）</label>' +
+    '<div class="pad" id="pad"><canvas id="cv"></canvas><div class="ph" id="ph">在此手写签名</div></div>' +
+    '<div class="pad-tools"><button class="ghost" id="clr">清除重写</button><span class="sp"></span></div>' +
+    '<label class="chk"><input type="checkbox" id="vol"><span id="declText"></span></label>' +
+    wpSelectHtml(d) +
+    '<div class="locbox" id="loc"><b>存证信息</b><br>提交时系统将记录：<span id="l1">签名时间（精确到分）</span> · ' +
+    '<span id="l2">你选择的工作地点</span>' +
+    '<div class="mini" style="margin-top:4px">若手机允许定位，会额外附一条 GPS 坐标作为佐证；不允许也不影响提交。</div></div>' +
+    '</div>' +
+    '<div id="w" style="margin-top:10px"></div>' +
+    '<button class="big" id="sub" style="margin-top:14px" disabled>请先选择上方意向</button></div>';
+  var pad = initPad(document.getElementById('cv'), document.getElementById('ph'));
+  var CHOICE = null;
+  var DECL = {
+    agree: 'Tôi xác nhận đã đọc kỹ nội dung trên và <b>tự nguyện</b> làm thêm giờ.<br>' +
+      '本人确认已仔细阅读以上内容，系<b>自愿</b>参加本次加班，知晓加班时间与加班费计算方式。',
+    decline: 'Tôi xác nhận đã đọc kỹ nội dung trên và <b>không đồng ý</b> làm thêm giờ. Chữ ký chỉ xác nhận ý kiến này do chính tôi đưa ra.<br>' +
+      '本人确认已仔细阅读以上内容，<b>不愿意</b>参加本次加班；签名仅用于确认该意向为本人所表达，不代表同意加班。'
+  };
+  function setChoice(c) {
+    CHOICE = c;
+    var a = document.getElementById('opt-agree'), b = document.getElementById('opt-decline');
+    a.className = 'opt' + (c === 'agree' ? ' on' : '');
+    b.className = 'opt dec' + (c === 'decline' ? ' on' : '');
+    document.getElementById('signArea').style.display = 'block';
+    document.getElementById('declText').innerHTML = DECL[c];
+    var chk = document.getElementById('vol'); chk.checked = false;
+    var sub = document.getElementById('sub');
+    sub.disabled = false;
+    sub.textContent = c === 'agree' ? '提交签名' : '提交：我不愿意加班';
+    sub.style.background = c === 'decline' ? '#c0392b' : '';
+    warn('', false, true);
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('input[name=ch]'), function (r) {
+    r.onchange = function () { setChoice(r.value); };
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.opt'), function (o) {
+    o.onclick = function (e) {
+      if (e.target.tagName !== 'INPUT') { var r = o.querySelector('input'); r.checked = true; setChoice(r.value); }
+    };
+  });
+  document.getElementById('clr').onclick = function () { pad.clear(); };
+  /* 实时读取当前选择，避免「定位失败→改选→提交」时记成旧意向 */
+  function finish(loc, place, manual) {
+    var c = CHOICE || 'agree';
+    var img = pad.data();
+    if (!img) { warn('请先在框内手写签名。', true); return false; }
+    var wpEl = document.getElementById('wpSel');
+    var wp = wpEl ? wpEl.value.trim() : '';
+    if (wpEl && wpEl.options.length > 1 && !wp) {
+      warn('请选择你的工作地点。', true); return false;
+    }
+    var placeFinal = wp || place || '';
+    var t = new Date(), iso = t.toISOString();
+    // 防伪码只取决于 工号+意向+时间+地点(下拉值)，GPS 后补不会改变它
+    var hash = hash6(me.empNo + '|' + c + '|' + iso + '|' + placeFinal);
+    if (loc) {
+      placeFinal = placeFinal + (placeFinal ? ' · ' : '') + 'GPS ' + loc.lat.toFixed(5) + ',' + loc.lng.toFixed(5);
+    }
+    me.sign = {
+      choice: c, voluntary: c === 'agree',
+      img: img, time: nowStr(t), iso: iso,
+      workPlace: wp,
+      lat: loc ? loc.lat : '', lng: loc ? loc.lng : '', acc: loc ? loc.acc : '',
+      place: placeFinal, manual: !loc, gps: !!loc,
+      ua: navigator.userAgent, hash: hash
+    };
+    if (API.on) {
+      apiPost('/sign', { docId: d.id, empNo: me.empNo, sign: me.sign })
+        .then(function (j) {
+          if (!j.ok) { infoBox('提交失败', '<p>' + esc(j.err || '网络异常') + '</p><p>您的签名已保存在本机，请稍后重试或联系 HR。</p>'); }
+          empDone();
+        }).catch(function (e) {
+          infoBox('网络异常', '<p>' + esc(e.message) + '</p><p>签名已存本机，请稍后重试或联系 HR。</p>');
+          empDone();
+        });
+    } else { save(); empDone(); }
+    return true;
+  }
+  document.getElementById('sub').onclick = function () {
+    if (!CHOICE) { warn('请先选择「愿意」或「不愿意」。', true); return; }
+    if (!pad.data()) { warn('请先在框内手写签名。', true); return; }
+    if (!document.getElementById('vol').checked) {
+      warn('请先勾选确认框，确认以上声明为您的真实意思表示。', true); return;
+    }
+    var wpEl0 = document.getElementById('wpSel');
+    if (wpEl0 && wpEl0.options.length > 1 && !wpEl0.value.trim()) {
+      warn('请选择你的工作地点。', true); return;
+    }
+    var sub = document.getElementById('sub');
+    sub.disabled = true;
+    sub.textContent = '正在提交…';
+    // 关键：不等待定位。先用员工选择的地点完成提交，GPS 拿不到也不影响。
+    // 之后若定位成功，后台把坐标补进这条记录（防伪码不变）。
+    if (!finish(null, '', true)) { sub.disabled = false; sub.textContent = sub.dataset.txt || '提交签名'; return; }
+    attachGpsLater(me, d);
+  };
+  function warn(t, bad, clear) {
+    var el = document.getElementById('w');
+    if (clear && !t) { el.innerHTML = ''; return; }
+    el.innerHTML = '<div class="notice' + (bad ? '' : ' info') + '">' + t + '</div>';
+  }
+}
+/* 提交后后台补 GPS：拿到就更新记录，拿不到就算了，绝不阻塞 */
+function attachGpsLater(me, d) {
+  if (!navigator.geolocation) return;
+  var done = false;
+  var timer = setTimeout(function () { done = true; }, 8000);
+  try {
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      if (done) return; done = true; clearTimeout(timer);
+      var la = pos.coords.latitude, ln = pos.coords.longitude;
+      if (!me.sign) return;
+      me.sign.gps = true;
+      me.sign.lat = la; me.sign.lng = ln; me.sign.acc = pos.coords.accuracy;
+      me.sign.place = (me.sign.workPlace || '') + ' · GPS ' + la.toFixed(5) + ',' + ln.toFixed(5);
+      save();
+      if (API.on) apiPost('/sign', { docId: d.id, empNo: me.empNo, sign: me.sign }).then(function () { });
+    }, function () { done = true; clearTimeout(timer); },
+      { enableHighAccuracy: true, timeout: 6000, maximumAge: 0 });
+  } catch (e) { }
+}
+function empDone() {
+  var d = EMP.doc, me = EMP.me, s = me.sign;
+  var dec = choiceOf(s) === 'decline';
+  var shiftTxt = (me.shift ? ' 班组 ' + esc(me.shift) : '');
+  document.getElementById('empbody').innerHTML =
+    '<div class="card"><div class="okmark"><div class="ic" style="' +
+    (dec ? 'background:#fdeceb;color:#c0392b' : '') + '">' + (dec ? '✕' : '✓') + '</div>' +
+    '<h2>' + (dec ? '已记录：您不愿意参加本次加班' : '签名已提交') + '</h2>' +
+    '<p class="hint">' + (dec ? 'Đã ghi nhận ý kiến không đồng ý · 该意向已存证，HR 可查看，不影响您的正常考勤'
+      : 'Đã ghi nhận · 本次签署已存证，不可修改') + '</p></div>' +
+
+    /* 员工本人信息 + 意向 */
+    '<div class="selfbox">' +
+    '<div class="row"><span>工号 Số thẻ</span><b>' + esc(me.empNo) + '</b></div>' +
+    '<div class="row"><span>姓名 Họ tên</span><b>' + esc(me.nameVi) + (me.nameCn ? ' / ' + esc(me.nameCn) : '') + '</b></div>' +
+    '<div class="row"><span>部门 Bộ phận</span><b>' + esc(me.dept || '—') + '</b></div>' +
+    '<div class="row"><span>班组 Ca</span><b>' + esc(me.shift || '—') + '</b></div>' +
+        '<div class="row"><span>意向 Ý kiến</span><b style="color:' + (dec ? '#c0392b' : '#1a8a55') + '">' +
+    (dec ? '不愿意 Không đồng ý' : '自愿 Tự nguyện') + '</b></div>' +
+    '</div>' +
+
+    /* 存证效果预览：打印出来就是这样 */
+    '<label style="margin-top:6px">存证信息（将按此格式打印在协商书上）</label>' +
+    '<div style="border:1px solid var(--line);border-radius:8px;background:#fff;padding:12px">' +
+    '<div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap">' +
+    '<div style="flex:1;min-width:180px"><div class="mini">Công nhân ký tên / 员工签名</div>' +
+    '<img src="' + s.img + '" style="max-width:100%;max-height:70px;background:#fff">' +
+    '<div style="font-size:11px;margin-top:4px;color:' + (dec ? '#c0392b' : '#1a8a55') + ';font-weight:600">' +
+    (dec ? '✗ Không đồng ý / 不同意' : '✓ Tự nguyện / 自愿') + '</div></div>' +
+    '<div style="flex:1;min-width:180px"><div class="mini">Thời gian ký / 签名时间</div>' +
+    '<b style="font-size:13px">' + esc(s.time) + '</b>' +
+    '<div class="mono" style="font-size:11px;color:#5a6b7c;margin-top:2px">防伪码 ' + esc(s.hash) + '</div></div>' +
+    '<div style="flex:1;min-width:180px"><div class="mini">Địa điểm làm thêm / 工作地点</div>' +
+    '<b style="font-size:13px">' + esc(s.place) + '</b>' +
+    '<div class="mini" style="margin-top:2px">' + (s.manual ? '手动填写' : 'GPS 精度 ±' + Math.round(s.acc) + ' 米') + '</div></div>' +
+    '</div></div>' +
+
+    '<div class="notice info" style="margin-top:14px">' +
+    (dec ? '您（' + esc(me.dept || '') + shiftTxt + '）的「不愿意」意向已与签名时间、地点一并记录，将如实打印在协商书上。' +
+      '公司不会因本次选择影响您的正常权益。'
+      : '您（' + esc(me.dept || '') + shiftTxt + '）的签名将与时间、地点一并打印在纸质协商书上，作为验厂存证。如需更正请联系 HR 撤销后重签。') +
+    '</div>' +
+    '<div class="bar" style="margin-top:14px"><button class="ghost" id="out">退出</button></div></div>';
+  document.getElementById('out').onclick = function () { location.href = location.href.split('?')[0]; };
+}
+function choiceOf(s) {
+  if (!s) return '';
+  if (s.choice) return s.choice;
+  return s.voluntary === false ? 'decline' : 'agree';   // 兼容旧数据
+}
+/* 签名板 */
+function initPad(cv, ph) {
+  var dpr = window.devicePixelRatio || 1;
+  var H = 170;
+  function size() {
+    var w = cv.parentNode.clientWidth;
+    cv.width = w * dpr; cv.height = H * dpr;
+    cv.style.height = H + 'px';
+  }
+  size();
+  var ctx = cv.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.lineWidth = 2.6; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#0b2545';
+  var drawing = false, last = null, empty = true;
+  function pos(e) {
+    var r = cv.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+  function start(e) {
+    e.preventDefault(); drawing = true; last = pos(e); empty = false;
+    if (ph) ph.style.display = 'none';
+    cv.setPointerCapture && cv.setPointerCapture(e.pointerId);
+  }
+  function move(e) {
+    if (!drawing) return; e.preventDefault();
+    var p = pos(e);
+    ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+    last = p;
+  }
+  function end() { drawing = false; }
+  cv.addEventListener('pointerdown', start);
+  cv.addEventListener('pointermove', move);
+  cv.addEventListener('pointerup', end);
+  cv.addEventListener('pointercancel', end);
+  cv.addEventListener('pointerleave', end);
+  window.addEventListener('resize', function () { size(); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.lineWidth = 2.6; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#0b2545'; });
+  return {
+    clear: function () { ctx.clearRect(0, 0, cv.width / dpr, cv.height / dpr); empty = true; if (ph) ph.style.display = ''; },
+    data: function () { if (empty) return null; return trim(cv); }
+  };
+}
+function trim(cv) {
+  var w = cv.width, h = cv.height;
+  var d = cv.getContext('2d').getImageData(0, 0, w, h).data;
+  var x0 = w, y0 = h, x1 = -1, y1 = -1;
+  for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) {
+    if (d[(y * w + x) * 4 + 3] > 12) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  }
+  if (x1 < 0) return null;
+  var p = 8 * (window.devicePixelRatio || 1);
+  x0 = Math.max(0, x0 - p); y0 = Math.max(0, y0 - p); x1 = Math.min(w - 1, x1 + p); y1 = Math.min(h - 1, y1 + p);
+  var c2 = document.createElement('canvas');
+  c2.width = x1 - x0 + 1; c2.height = y1 - y0 + 1;
+  c2.getContext('2d').drawImage(cv, x0, y0, c2.width, c2.height, 0, 0, c2.width, c2.height);
+  return c2.toDataURL('image/png');
+}
+/* 定位：只做附加存证，绝不阻塞提交。
+   浏览器定位可能长时间不回调（权限弹窗被忽略 / 非 HTTPS 静默失败），
+   因此设 6 秒超时，超时就放弃 GPS，只保留员工选择的地点。 */
+function grabLocation(cb, onManual) {
+  var place = '';
+  var settled = false;
+  onManual = onManual || function (v) { cb(null, v, true); };
+  function bail(why) { if (settled) return; settled = true; cb(null, '', true, why); }
+  var timer = setTimeout(function () { bail('timeout'); }, 6000);
+  var wrap = function (loc, p, manual, why) {
+    if (settled) return;
+    settled = true; clearTimeout(timer);
+    cb(loc, p, manual, why);
+  };
+  if (!navigator.geolocation) { bail('unsupported'); return; }
+  document.getElementById('l1') && (document.getElementById('l1').textContent = '正在获取时间…');
+  navigator.geolocation.getCurrentPosition(function (p) {
+    var lat = p.coords.latitude, lng = p.coords.longitude, acc = p.coords.accuracy;
+    var fmt = Math.abs(lat).toFixed(5) + '°' + (lat >= 0 ? 'N' : 'S') + ' ' + Math.abs(lng).toFixed(5) + '°' + (lng >= 0 ? 'E' : 'W');
+    revGeo(lat, lng, function (addr) {
+      cb({ lat: lat, lng: lng, acc: acc }, addr ? addr + ' · ' + fmt : fmt, false);
+    });
+  }, function (err) {
+    bail(err && err.code === 1 ? 'denied' : 'unavailable');
+  }, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 });
+  function askManual(why) {
+    return;   // 地点改为员工下拉选择，不再要求手填
+    var box = document.getElementById('loc');
+    if (!box) return;
+    box.innerHTML = '<b>存证信息</b><br>' + why + '，为完成存证请填写当前地点（将打印在协商书上）：' +
+      '<input id="mpl" placeholder="例如：Tây Ninh, Gain Lucky Nhà máy" style="margin-top:6px">' +
+      '<div class="mini" style="margin-top:4px">签名时间仍会由系统自动记录。</div>';
+    var btn = document.getElementById('sub');
+    if (btn) {
+      btn.disabled = false; btn.textContent = '确认地点并提交签名';
+      btn.onclick = function () {
+        var v = (document.getElementById('mpl').value || '').trim();
+        if (!v) { infoBox('请填写地点', '<p>请在上方填写当前所在地点。</p>'); return; }
+        btn.disabled = true;
+        onManual(v);
+      };
+    }
+  }
+}
+function revGeo(lat, lng, cb) {
+  var done = false;
+  var t = setTimeout(function () { if (!done) { done = true; cb(''); } }, 5000);
+  try {
+    fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + lat + '&lon=' + lng + '&accept-language=vi')
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (done) return; done = true; clearTimeout(t);
+        var a = j && j.address || {};
+        cb([a.city || a.town || a.county || a.state, a.country].filter(Boolean).join(', ') || (j && j.name) || '');
+      }).catch(function () { if (!done) { done = true; clearTimeout(t); cb(''); } });
+  } catch (e) { if (!done) { done = true; clearTimeout(t); cb(''); } }
+}
+
+window.addEventListener('DOMContentLoaded', boot);
+
+</script>
+</body>
+</html>
